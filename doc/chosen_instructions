@@ -1,0 +1,102 @@
+The instructions to be used in compiled x86_64 binaries
+
+add
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+call
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+clc
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+cld 
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+cli
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+cmp
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+cmc
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+dec
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+inc
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+int
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+jmp
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+jne
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+je 
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+jz
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+jnz
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+mov
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+nop
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+pop
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+push
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+ret
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+stc
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+std
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+sti
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+sub
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:
+xor
+    Opcode in x86_64:
+    How arguments are packed:
+    Notes:

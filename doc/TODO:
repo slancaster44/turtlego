@@ -1,0 +1,14 @@
+//1) Implement Proper Type Checking for Infix Operators
+1.5) Line, col for tokens off??
+//2) Implement block parsing
+2.5) Refractor
+//Design the stack frame
+3) Generate pcode for blocks, infix operaotrs, and let stmts
+3.5) Refractor
+4) Implement vm for said pcode or machine code binary??
+4.5) Refractor
+
+...
+5) Implement functions
+6) Implement if-else
+7) Implement loops

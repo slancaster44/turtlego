@@ -1,0 +1,71 @@
+Primative Types:
+    int
+    flt
+    str
+    bool
+
+Infix Operators:
+    == :: Input: string, int, flt, bool. output boolean
+    != :: input: string, int flt, bool. output boolean
+    <= :: input: flt, int
+    >= :: input: flt, int
+
+    || :: Input, boolean, output: boolean
+    && :: Input boolean, output: boolean
+
+    +  :: Input: string, int flt, output: same as input
+    -  :: Input: int, flt, output: same as input
+    /  :: ''     ''
+    *  :: ''     ''
+    ** :: ''     ''
+
+Prefix Operators:
+    - :: Input int, flt, output: same
+    + :: Input int, flt, output same
+    ! :: Input bool, output bool
+
+Variable Definitions:
+    let <ident> = <expr>
+
+Blocks
+    { <expr> ... }
+
+Functions:
+    fn (<type> <ident>, ...) <type> 
+
+Stack Frame                         Location of first byte
+    values in this scope            :: ...
+    actual paramaters               :: SP + 0 ..
+    return address                  :: SP - 8
+    pointer to top of last frame    :: SP - 16
+    scope depth                     :: SP - 24
+    saved machine state             :: 
+        R1                          :: SP - 32
+        R2                          :: SP - 40
+        R3                          :: SP - 48
+        R4                          :: SP - 56
+    value of R1 when looping back   :: SP - 64
+    value of R2 when looping back   :: SP - 72
+    return values                   :: ...
+
+Instructions to:
+    access value in this scope  :: LOAD (SP + <offset on stack>)
+    access value in prior scope :: LOAD <R1> into (SP - 64)
+                                   LOAD <R2> into (SP - 72)
+                                   LOAD <depth var found> into <R1>
+                                   LOAD ((SP-16) - 24) into R2
+                                   IFEQ <R1> <R2> : Pull val from this frame
+                                   ELSE continue
+    Push Frame :: Calculate size of stored vals as TV (Top of values)
+               :: Save register values into TV + 8 + 8 + size of returns
+               :: push next scope depth 
+               :: push current SP
+               :: push return code address
+               :: push paramaters
+               :: pass control to new code
+
+    POP Frame  :: Push return values to reserved space in SP - 80...
+               :: Change SP to (SP - 16)
+               :: Return control to return address
+
+                                   
