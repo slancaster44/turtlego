@@ -7,10 +7,9 @@ type Assembler struct {
 	code       []byte
 	data       []byte
 
-	pcode pcode.Program
+	output []byte
 
-	instructionSet   byte
-	targetFileformat byte
+	pcode *pcode.Program
 }
 
 const (
@@ -21,18 +20,14 @@ const (
 	ELF byte = iota
 )
 
-func NewAssembler(outFilename string,
-	instructionSet, targetFileformat byte,
-	pcode pcode.Program) *Assembler {
+func NewAssembler(pcode *pcode.Program) *Assembler {
 	a := &Assembler{}
 
-	a.outputFile = outFilename
-	a.instructionSet = instructionSet
-	a.targetFileformat = targetFileformat
 	a.pcode = pcode
 
 	a.code = []byte{}
 	a.data = []byte{}
+	a.output = []byte{}
 
 	return a
 }

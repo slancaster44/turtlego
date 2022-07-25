@@ -10,12 +10,14 @@ type Instruction struct {
 const (
 	HLT byte = iota
 
-	REG1
+	LOADINT
+)
+
+const (
+	REG1 byte = iota
 	REG2
 	REG3
 	REG4
-
-	LOADINT
 )
 
 var InstructionMnemonicMap = map[byte]string{

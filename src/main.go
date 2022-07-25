@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"turtlego/src/assembler"
 	"turtlego/src/lexer"
 	"turtlego/src/parser"
 	"turtlego/src/pcodegnerator"
@@ -23,6 +24,8 @@ func main() {
 		printTree()
 	case "-c":
 		printPCode()
+	case "-a":
+		assemble()
 	default:
 		printHelp()
 	}
@@ -88,4 +91,21 @@ func printPCode() {
 	for _, i := range pg.Output.Instructions {
 		i.Print()
 	}
+}
+
+func assemble() {
+	if len(os.Args) < 3 {
+		printHelp()
+	}
+
+	src := source.New(os.Args[2])
+	lex := lexer.New(src)
+	prs := parser.New(lex)
+	prs.ParseProgram()
+
+	pg := pcodegnerator.NewGenerator(prs.Tree)
+	pg.GenPCode()
+
+	asm := assembler.NewAssembler(&pg.Output)
+	asm.WriteElf("./a.out")
 }

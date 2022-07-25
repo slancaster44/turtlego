@@ -100,3 +100,9 @@ xor
     Opcode in x86_64:
     How arguments are packed:
     Notes:
+
+All binaries must exit with the following instructions:
+    mov rax, 0x01
+    mov rbx, <exit_code>
+    int 0x80 ;; Call kernel
+This passes control back to the kernel.
