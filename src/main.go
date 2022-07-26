@@ -6,7 +6,7 @@ import (
 	"turtlego/src/assembler"
 	"turtlego/src/lexer"
 	"turtlego/src/parser"
-	"turtlego/src/pcodegnerator"
+	"turtlego/src/pcodegenerator"
 	"turtlego/src/source"
 )
 
@@ -85,7 +85,7 @@ func printPCode() {
 	prs := parser.New(lex)
 	prs.ParseProgram()
 
-	pg := pcodegnerator.NewGenerator(prs.Tree)
+	pg := pcodegenerator.NewGenerator(prs.Tree)
 	pg.GenPCode()
 
 	for _, i := range pg.Output.Instructions {
@@ -103,9 +103,10 @@ func assemble() {
 	prs := parser.New(lex)
 	prs.ParseProgram()
 
-	pg := pcodegnerator.NewGenerator(prs.Tree)
+	pg := pcodegenerator.NewGenerator(prs.Tree)
 	pg.GenPCode()
 
 	asm := assembler.NewAssembler(&pg.Output)
+	asm.Assemble()
 	asm.WriteElf("./a.out")
 }

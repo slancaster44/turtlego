@@ -29,7 +29,6 @@ type Source struct {
 }
 
 func New(inFile string) *Source {
-
 	var contents string
 
 	filename, _ := filepath.Abs(inFile)
@@ -78,6 +77,8 @@ func NewWithStr(contents string, filename string) *Source {
 	s.curIter = -1
 	s.nextIter = 0
 
+	s.LineNo = 1
+
 	s.MoveUp()
 
 	return s
@@ -115,7 +116,7 @@ func (s *Source) moveItersUp() {
 
 func (s *Source) setLocation() {
 	if s.CurChar == '\n' {
-		s.ColumnNo = 0
+		s.ColumnNo = 1
 		s.LineNo += 1
 	}
 	s.ColumnNo++

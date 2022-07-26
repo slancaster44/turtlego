@@ -8,9 +8,13 @@ type Instruction struct {
 }
 
 const (
-	HLT byte = iota
+	LOADINT byte = iota
+	ADD
 
-	LOADINT
+	PUSH_REG
+	POP
+
+	ADD_REG_REG_INT
 )
 
 const (
@@ -21,8 +25,11 @@ const (
 )
 
 var InstructionMnemonicMap = map[byte]string{
-	HLT:     "halt",
-	LOADINT: "loadint",
+	LOADINT:         "loadint",
+	ADD:             "add",
+	PUSH_REG:        "push_reg",
+	POP:             "pop",
+	ADD_REG_REG_INT: "add_reg_reg_int",
 }
 
 func (i *Instruction) Stringify() string {
