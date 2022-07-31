@@ -3,6 +3,7 @@ package pcode
 type Program struct {
 	Instructions []*Instruction
 	Data         []byte
+	registers    []int
 }
 
 func (b *Program) WriteInstruction(v *Instruction) {

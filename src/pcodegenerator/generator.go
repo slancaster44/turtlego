@@ -13,23 +13,36 @@ type OpTypePair struct {
 }
 
 type Generator struct {
-	SyntaxTree    []ast.Node
-	CodeGenFnMap  map[byte]func(ast.Node)
-	infixGenFnMap map[OpTypePair]func(ast.Node)
-	Output        pcode.Program
+	SyntaxTree                []ast.Node
+	CodeGenFnMap              map[byte]func(ast.Node) Register
+	infixGenFnMap             map[OpTypePair]func(ast.Node) Register
+	numberOfActiveAllocations map[int]int
+	numRegisterPushesToStack  int
+	Program                   pcode.Program
+	NumberOfRegisters         int
 }
 
-func NewGenerator(st []ast.Node) *Generator {
+func NewGenerator(st []ast.Node, registerCountInTargetMachine int) *Generator {
 	ret_val := &Generator{}
 	ret_val.SyntaxTree = st
+	ret_val.numRegisterPushesToStack = 0
+	ret_val.NumberOfRegisters = registerCountInTargetMachine
 
-	ret_val.CodeGenFnMap = map[byte]func(ast.Node){
+	ret_val.CodeGenFnMap = map[byte]func(ast.Node) Register{
 		ast.INT_NT:   ret_val.genIntCode,
 		ast.INFIX_NT: ret_val.genInfixCode,
 	}
 
-	ret_val.infixGenFnMap = map[OpTypePair]func(ast.Node){
-		{"+", ast.INT}: ret_val.genAddInt,
+	ret_val.numberOfActiveAllocations = make(map[int]int)
+	for i := 0; i < registerCountInTargetMachine; i++ {
+		ret_val.numberOfActiveAllocations[i] = 0
+	}
+
+	ret_val.infixGenFnMap = map[OpTypePair]func(ast.Node) Register{
+		{"+", ast.INT}: ret_val.mkInfixOpFuncInt(pcode.ADD_REG_INT_INT, pcode.ADD_REG_REG_INT),
+		{"-", ast.INT}: ret_val.mkInfixOpFuncInt(pcode.SUB_REG_INT_INT, pcode.SUB_REG_REG_INT),
+		{"*", ast.INT}: ret_val.mkInfixOpFuncInt(pcode.MUL_REG_INT_INT, pcode.MUL_REG_REG_INT),
+		{"/", ast.INT}: ret_val.mkInfixOpFuncInt(pcode.DIV_REG_INT_INT, pcode.DIV_REG_REG_INT),
 	}
 
 	return ret_val
@@ -41,16 +54,17 @@ func (g *Generator) raiseError(n, m string, tok tokens.Token) {
 
 func (g *Generator) GenPCode() {
 	for _, stmt := range g.SyntaxTree {
-		g.appendCodeFor(stmt)
+		reg := g.appendCodeFor(stmt)
+		g.ReleaseRegister(reg)
 	}
 }
 
-func (g *Generator) appendCodeFor(stmt ast.Node) {
+func (g *Generator) appendCodeFor(stmt ast.Node) Register {
 	fn, ok := g.CodeGenFnMap[stmt.NodeType()]
 
 	if !ok {
 		g.raiseError("Generation", "Unimplemented node type", stmt.GetTok())
 	}
 
-	fn(stmt)
+	return fn(stmt)
 }

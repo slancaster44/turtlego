@@ -5,7 +5,7 @@ import (
 	"turtlego/src/pcode"
 )
 
-func (p *Generator) genInfixCode(n ast.Node) {
+func (p *Generator) genInfixCode(n ast.Node) Register {
 	op := n.(*ast.InfixExpr).Op
 	key := OpTypePair{n.(*ast.InfixExpr).Op, n.TypeGenerated()}
 	fn, ok := p.infixGenFnMap[key]
@@ -13,19 +13,37 @@ func (p *Generator) genInfixCode(n ast.Node) {
 	if !ok {
 		p.raiseError("Generation", "Cannot generate code for operator '"+op+"'", n.GetTok())
 	}
-	fn(n)
+	return fn(n)
 }
 
-func (p *Generator) genAddInt(n ast.Node) {
-	//Calculate Left Side
-	p.appendCodeFor(n.(*ast.InfixExpr).Left)
-	//Push Left Side to Stack
-	p.genPushRegToStack(int(pcode.REG1))
-	//Calculate Right Side
-	p.appendCodeFor(n.(*ast.InfixExpr).Right)
-	//Pop Left Side to R2
-	p.genPopToReg(int(pcode.REG2))
-	//Add R1, and R2, leave results in R1
-	i := pcode.Instruction{pcode.ADD_REG_REG_INT, []int{int(pcode.REG1), int(pcode.REG2)}}
-	p.Output.WriteInstruction(&i)
+//This function creates another function that can handle an infix operation
+//on integers. For example, it can take the ADD_REG_INT_INT and the ADD_REG_REG_INT
+//instructions, and generate a function that can convert an addition ast into
+//the proper instructions
+func (p *Generator) mkInfixOpFuncInt(OP_REG_INT_INT, OP_REG_REG_INT byte) func(n ast.Node) Register {
+	fn := func(n ast.Node) Register {
+		//Calculate Left Side
+		left := n.(*ast.InfixExpr).Left
+		reg := p.appendCodeFor(left)
+
+		//Calculate Right Side
+		right := n.(*ast.InfixExpr).Right
+		var i pcode.Instruction
+
+		//If the right side is an integer, we can
+		//add it to R1 as an immediate
+		if right.NodeType() == ast.INT_NT {
+			i = pcode.Instruction{OP_REG_INT_INT, []int{reg.RegisterNumber, right.(*ast.Int).Value}}
+			p.Program.WriteInstruction(&i)
+		} else {
+			reg2 := p.appendCodeFor(right)
+			i = pcode.Instruction{OP_REG_REG_INT, []int{reg.RegisterNumber, reg2.RegisterNumber}}
+			p.Program.WriteInstruction(&i)
+			p.ReleaseRegister(reg2) //The result has been moved to reg1, so we can now release reg2
+		}
+
+		return reg
+	}
+
+	return fn
 }

@@ -85,10 +85,10 @@ func printPCode() {
 	prs := parser.New(lex)
 	prs.ParseProgram()
 
-	pg := pcodegenerator.NewGenerator(prs.Tree)
+	pg := pcodegenerator.NewGenerator(prs.Tree, 4)
 	pg.GenPCode()
 
-	for _, i := range pg.Output.Instructions {
+	for _, i := range pg.Program.Instructions {
 		i.Print()
 	}
 }
@@ -103,10 +103,10 @@ func assemble() {
 	prs := parser.New(lex)
 	prs.ParseProgram()
 
-	pg := pcodegenerator.NewGenerator(prs.Tree)
+	pg := pcodegenerator.NewGenerator(prs.Tree, 4) //TODO
 	pg.GenPCode()
 
-	asm := assembler.NewAssembler(&pg.Output)
+	asm := assembler.NewAssembler(&pg.Program)
 	asm.Assemble()
 	asm.WriteElf("./a.out")
 }

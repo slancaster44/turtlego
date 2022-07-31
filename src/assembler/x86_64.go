@@ -7,45 +7,38 @@ import (
 )
 
 const (
-	MOV            byte = 0x48
-	MOV_INT_PREFIX      = 0xC7
-	REGISTER_BASE       = 0xC0
-	PUSH_REG_BASE       = 0x50
-	POP_BASE            = 0x58
-	ADD                 = 0x48
-	ADD_REG_PREFIX      = 0x01
+	REX_W_PREFIX  byte = 0x48
+	MOV_INT            = 0xC7
+	MOV_REG_REG        = 0x89
+	REGISTER_BASE      = 0xC0
+	PUSH_REG_BASE      = 0x50
+	POP_BASE           = 0x58
+
+	ADD_REGS    = 0x01
+	ADD_RAX_INT = 0x05
+	ADD_REG_INT = 0x81
+
+	SUB_REGS      = 0x29
+	SUB_RAX_INT   = 0x2D
+	SUB_REG_INT   = 0x81
+	SUB_INDICATOR = 0x28
 
 	RAX = 0x00
 	RCX = 0x01
 	RDX = 0x02
 	RBX = 0x03
-
-	//When encoding two registers into a single
-	//argument, then the register of one of those
-	//operands is different than normal
-	SRC_RAX = 0x00
-	SRC_RBX = 0x01
-	SRC_RCX = 0x02
-	SRC_RDX = 0x03
 )
 
 var registerMap = map[int]byte{
-	int(pcode.REG1): RAX,
-	int(pcode.REG2): RBX,
-	int(pcode.REG3): RCX,
-	int(pcode.REG4): RDX,
-}
-
-var srcRegisterMap = map[int]byte{
-	int(pcode.REG1): SRC_RAX,
-	int(pcode.REG2): SRC_RBX,
-	int(pcode.REG3): SRC_RCX,
-	int(pcode.REG4): SRC_RDX,
+	pcode.REG1: RAX,
+	pcode.REG2: RBX,
+	pcode.REG3: RCX,
+	pcode.REG4: RDX,
 }
 
 func dualRegisterEncoding(d, s int) byte {
 
-	source, ok := srcRegisterMap[s]
+	source, ok := registerMap[s]
 	if !ok {
 		panic(fmt.Sprintf("Failed to lookup register '%d'", s))
 	}
@@ -72,9 +65,17 @@ func convertNumToByteArray(num int) []byte {
 	return buf
 }
 
+func (a *Assembler) assembleMovRegReg(ins pcode.Instruction) {
+	a.code = append(a.code, REX_W_PREFIX)
+	a.code = append(a.code, MOV_REG_REG)
+
+	i := dualRegisterEncoding(ins.Arguments[0], ins.Arguments[1])
+	a.code = append(a.code, i)
+}
+
 func (a *Assembler) assembleMovInt(ins pcode.Instruction) {
-	a.code = append(a.code, MOV)
-	a.code = append(a.code, MOV_INT_PREFIX)
+	a.code = append(a.code, REX_W_PREFIX)
+	a.code = append(a.code, MOV_INT)
 	a.code = append(a.code, singleRegisterEncoding(ins.Arguments[0]))
 	a.code = append(a.code, convertNumToByteArray(ins.Arguments[1])...)
 }
@@ -92,11 +93,53 @@ func (a *Assembler) assemblePop(ins pcode.Instruction) {
 }
 
 func (a *Assembler) assembleAddRegRegInt(ins pcode.Instruction) {
-	a.code = append(a.code, ADD)
-	a.code = append(a.code, ADD_REG_PREFIX)
-
-	dest := int(registerMap[ins.Arguments[0]])
-	src := int(registerMap[ins.Arguments[1]])
-	reg := dualRegisterEncoding(dest, src)
+	a.code = append(a.code, REX_W_PREFIX)
+	a.code = append(a.code, ADD_REGS)
+	reg := dualRegisterEncoding(ins.Arguments[0], ins.Arguments[1])
 	a.code = append(a.code, reg)
 }
+
+func (a *Assembler) assembleAddRegIntInt(ins pcode.Instruction) {
+	a.code = append(a.code, REX_W_PREFIX)
+
+	//For whatever reason, our x86 overlords chose this asinine encodeing
+	//where ONLY rax is different
+	if ins.Arguments[0] == pcode.REG1 {
+		a.code = append(a.code, ADD_RAX_INT)
+	} else {
+		a.code = append(a.code, ADD_REG_INT)
+		a.code = append(a.code, singleRegisterEncoding(ins.Arguments[0]))
+	}
+
+	n := convertNumToByteArray(ins.Arguments[1])
+	a.code = append(a.code, n...)
+}
+
+func (a *Assembler) assembleSubRegRegInt(ins pcode.Instruction) {
+	a.code = append(a.code, REX_W_PREFIX)
+	a.code = append(a.code, SUB_REGS)
+	regs := dualRegisterEncoding(ins.Arguments[0], ins.Arguments[1])
+	a.code = append(a.code, regs)
+}
+
+func (a *Assembler) assembleSubRegIntInt(ins pcode.Instruction) {
+	a.code = append(a.code, REX_W_PREFIX)
+
+	if ins.Arguments[0] == pcode.REG1 {
+		a.code = append(a.code, SUB_RAX_INT)
+	} else {
+		a.code = append(a.code, SUB_REG_INT)
+		a.code = append(a.code, SUB_INDICATOR+singleRegisterEncoding(ins.Arguments[0]))
+	}
+
+	n := convertNumToByteArray(ins.Arguments[1])
+	a.code = append(a.code, n...)
+}
+
+func (a *Assembler) assembleMulRegRegInt(ins pcode.Instruction) {}
+
+func (a *Assembler) assembleMulRegIntInt(ins pcode.Instruction) {}
+
+func (a *Assembler) assembleDivRegRegInt(ins pcode.Instruction) {}
+
+func (a *Assembler) assembleDivRegIntInt(ins pcode.Instruction) {}

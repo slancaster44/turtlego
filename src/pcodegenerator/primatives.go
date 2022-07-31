@@ -5,15 +5,13 @@ import (
 	"turtlego/src/pcode"
 )
 
-func (p *Generator) genIntCode(stmt ast.Node) {
+func (p *Generator) genIntCode(stmt ast.Node) Register {
 	number := stmt.(*ast.Int).Value
-	ins := &pcode.Instruction{
-		pcode.LOADINT,
-		[]int{
-			int(pcode.REG1),
-			number,
-		},
-	}
+	reg := p.GetRegister()
 
-	p.Output.WriteInstruction(ins)
+	ins := &pcode.Instruction{pcode.LOADINT, []int{reg.RegisterNumber, number}}
+	p.Program.WriteInstruction(ins)
+
+	//p.ReleaseRegister(reg)
+	return reg
 }
