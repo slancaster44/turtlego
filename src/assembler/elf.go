@@ -6,7 +6,6 @@ import (
 )
 
 func (a *Assembler) WriteElf(filename string) {
-	a.WriteExitToCode()
 	a.BuildElfHeader()
 	a.WriteOutput(a.code...)
 	a.WriteOutput(a.data...)
@@ -142,18 +141,4 @@ func (a *Assembler) WriteValOutput(size byte, val uint64) {
 	buffr := make([]byte, size)
 	binary.LittleEndian.PutUint64(buffr, val)
 	a.WriteOutput(buffr...)
-}
-
-func (a *Assembler) WriteExitToCode() {
-	//Three instructions must be written to the
-	//code in order for the program to exit properly with
-	//an exit code of 0
-
-	mov_rax_0x01 := []byte{0x48, 0xC7, 0xC0, 0x01, 0x00, 0x00, 0x00} //Set rax to exit interrupt
-	mov_rbx_0x00 := []byte{0x48, 0xC7, 0xC3, 0x00, 0x00, 0x00, 0x00} //Set exit code to 0
-	int_0x80 := []byte{0xCD, 0x80}                                   //Call interrupt set in rax
-
-	a.code = append(a.code, mov_rax_0x01...)
-	a.code = append(a.code, mov_rbx_0x00...)
-	a.code = append(a.code, int_0x80...)
 }

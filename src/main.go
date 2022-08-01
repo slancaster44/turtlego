@@ -107,6 +107,6 @@ func assemble() {
 	pg.GenPCode()
 
 	asm := assembler.NewAssembler(&pg.Program)
-	asm.Assemble()
+	asm.Assemble(assembler.X86_64)
 	asm.WriteElf("./a.out")
 }
