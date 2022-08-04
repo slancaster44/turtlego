@@ -28,13 +28,17 @@ const (
 	MUL_REG_REG_INT
 
 	MOV_REG_REG
+	MOV_REG_ADDRESS_REG //Move from a register to the address in a register
+	MOV_REG_REG_ADDRESS //Move from an address in a register to a register
 )
 
 const (
-	REG1 int = iota
-	REG2
-	REG3
-	REG4
+	STACK_FRAME_POINTER_REG int = -2
+	STACK_POINTER           int = -1
+	REG1                    int = 0
+	REG2                    int = 1
+	REG3                    int = 2
+	REG4                    int = 3
 )
 
 var InstructionMnemonicMap = map[byte]string{
@@ -43,7 +47,11 @@ var InstructionMnemonicMap = map[byte]string{
 	PUSH_REG:        "push_reg",
 	POP:             "pop",
 	ADD_REG_REG_INT: "add_reg_reg_int",
-	MOV_REG_REG:     "mov_reg_reg",
+
+	MOV_REG_REG:         "mov_reg_reg",
+	MOV_REG_ADDRESS_REG: "mov_reg_address_reg",
+	MOV_REG_REG_ADDRESS: "mov_reg_reg_address",
+
 	SUB_REG_INT_INT: "sub_reg_int_int",
 	SUB_REG_REG_INT: "sub_reg_reg_int",
 

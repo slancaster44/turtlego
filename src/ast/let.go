@@ -6,13 +6,19 @@ import (
 	"turtlego/src/tokens"
 )
 
+type Location struct {
+	IsStack         bool
+	LocationOnStack int
+	ScopeDepth      int
+}
+
 //Let when the variable is intialized
 type LetInit struct {
-	Tok        tokens.Token
-	Ident      string
-	Expr       Node
-	ScopeDepth int
-	Type       byte
+	Tok          tokens.Token
+	Ident        string
+	LocationInfo Location
+	Expr         Node
+	Type         byte
 }
 
 func (l *LetInit) GetTok() tokens.Token {
@@ -20,7 +26,8 @@ func (l *LetInit) GetTok() tokens.Token {
 }
 
 func (l *LetInit) Stringify(tab string) string {
-	ret_val := tab + "<let var '" + l.Ident + "', depth='" + strconv.Itoa(l.ScopeDepth) + "'>\n"
+	ret_val := tab + "<let var '" + l.Ident + "', depth='" + strconv.Itoa(l.LocationInfo.ScopeDepth)
+	ret_val += "' stack_location='" + strconv.Itoa(l.LocationInfo.LocationOnStack) + "'>\n"
 	ret_val += l.Expr.Stringify(tab + "\t")
 	ret_val += tab + "<\\let>\n"
 	return ret_val

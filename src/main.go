@@ -70,9 +70,7 @@ func printTree() {
 	prs := parser.New(lex)
 	prs.ParseProgram()
 
-	for _, i := range prs.Tree {
-		i.PrintAll("")
-	}
+	prs.Tree.PrintAll("")
 }
 
 func printPCode() {

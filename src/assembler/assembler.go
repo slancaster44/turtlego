@@ -36,12 +36,14 @@ func NewAssembler(pc *pcode.Program) *Assembler {
 	a.output = []byte{}
 
 	a.pcodeX86map = map[byte]AssemblerFn{
-		pcode.LOADINT:         x86_64.MovRegImm,
-		pcode.ADD_REG_INT_INT: x86_64.AddImmReg,
-		pcode.ADD_REG_REG_INT: x86_64.AddRegReg,
-		pcode.SUB_REG_INT_INT: x86_64.SubImmReg,
-		pcode.PUSH_REG:        x86_64.PushReg,
-		pcode.POP:             x86_64.PopReg, //TODO: Change to POP
+		pcode.LOADINT:             x86_64.MovRegImm,
+		pcode.MOV_REG_REG:         x86_64.MovRegReg,
+		pcode.MOV_REG_ADDRESS_REG: x86_64.MovAddrReg,
+		pcode.ADD_REG_INT_INT:     x86_64.AddImmReg,
+		pcode.ADD_REG_REG_INT:     x86_64.AddRegReg,
+		pcode.SUB_REG_INT_INT:     x86_64.SubImmReg,
+		pcode.PUSH_REG:            x86_64.PushReg,
+		pcode.POP:                 x86_64.PopReg, //TODO: Change to POP
 	}
 	a.exitFnsMap = map[byte]func() []byte{
 		X86_64: x86_64.ExitX86,

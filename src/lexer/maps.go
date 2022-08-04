@@ -38,9 +38,11 @@ var doubleChar = map[string]byte{
 }
 
 var keywords = map[string]byte{
-	"let": tokens.LET,
-	"fn":  tokens.FN,
-	"str": tokens.STR_T,
-	"int": tokens.INT_T,
-	"flt": tokens.FLT_T,
+	"let":   tokens.LET,
+	"fn":    tokens.FN,
+	"str":   tokens.STR_T,
+	"int":   tokens.INT_T,
+	"flt":   tokens.FLT_T,
+	"true":  tokens.BOOL,
+	"false": tokens.BOOL,
 }

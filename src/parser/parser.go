@@ -37,7 +37,7 @@ type operatorInputOutputKey struct {
 }
 type Parser struct {
 	lxr  *lexer.Lexer
-	Tree []ast.Node
+	Tree ast.Block
 
 	prefixParseFns map[byte]prefixFn
 	infixParseFns  map[byte]infixFn
@@ -59,9 +59,9 @@ func New(lexer *lexer.Lexer) *Parser {
 	 */
 	p.prefixParseFns = map[byte]prefixFn{
 		//tokens.STR:         p.parseStr,
-		tokens.FLT: p.parseFlt,
-		tokens.INT: p.parseInt,
-		//tokens.BOOL:        p.parseBool,
+		tokens.FLT:    p.parseFlt,
+		tokens.INT:    p.parseInt,
+		tokens.BOOL:   p.parseBool,
 		tokens.IDENT:  p.parseIdent,
 		tokens.POP:    p.parsePrefix,
 		tokens.OP1:    p.parsePrefix, //'+' and '-'
@@ -162,13 +162,15 @@ func (p *Parser) raiseError(n, m string) {
 }
 
 func (p *Parser) ParseProgram() {
+	tree := []ast.Node{}
 	for p.lxr.CurTok.Alias != tokens.EOF {
 
 		val := p.parseExpr(0)
-		p.Tree = append(p.Tree, val)
+		tree = append(tree, val)
 		p.skipWhitespace()
 
 	}
+	p.Tree = ast.Block{tree, ast.INT, len(p.typetables[0].Entries), tree[0].GetTok()}
 }
 
 func (p *Parser) parseExpr(prec int) ast.Node {

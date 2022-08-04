@@ -16,16 +16,19 @@ func (p *Parser) parseLet() ast.Node {
 	p.lxr.MoveUp()
 
 	var ret_val ast.Node
-	if p.lxr.CurTok.Alias == tokens.EQ {
-		p.lxr.MoveUp()
-		expr := p.parseExpr(0)
-		p.addTypetableEntry(id, expr.TypeGenerated())
-		scopeDepth := len(p.typetables)
-		ret_val = &ast.LetInit{tok, id, expr, scopeDepth, expr.TypeGenerated()}
-
-	} else {
+	if p.lxr.CurTok.Alias != tokens.EQ {
 		p.raiseError("Syntax", "Expected '=' or ':', got '"+p.lxr.CurTok.Value+"'")
 	}
+
+	p.lxr.MoveUp()
+	expr := p.parseExpr(0)
+	p.addTypetableEntry(id, expr.TypeGenerated())
+	scopeDepth := len(p.typetables)
+	locationOnStack := len(p.typetables[0].Entries)
+
+	l := ast.Location{true, locationOnStack, scopeDepth}
+
+	ret_val = &ast.LetInit{tok, id, l, expr, expr.TypeGenerated()}
 
 	return ret_val
 }

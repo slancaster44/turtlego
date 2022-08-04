@@ -21,7 +21,8 @@ func (p *Parser) parseBlock() ast.Node {
 	p.lxr.MoveUp()
 
 	typeGenerated := Exprs[len(Exprs)-1].TypeGenerated()
+	numOfStackVars := len(p.typetables[0].Entries)
 	p.typetables = p.typetables[1:]
 
-	return &ast.Block{Exprs, typeGenerated, tok}
+	return &ast.Block{Exprs, typeGenerated, numOfStackVars, tok}
 }

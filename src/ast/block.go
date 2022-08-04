@@ -6,9 +6,10 @@ import (
 )
 
 type Block struct {
-	Exprs   []Node
-	RetType byte
-	Tok     tokens.Token
+	Exprs        []Node
+	RetType      byte
+	NumStackVars int
+	Tok          tokens.Token
 }
 
 func (b *Block) GetTok() tokens.Token {

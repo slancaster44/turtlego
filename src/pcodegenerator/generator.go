@@ -13,24 +13,27 @@ type OpTypePair struct {
 }
 
 type Generator struct {
-	SyntaxTree                []ast.Node
+	SyntaxTree                ast.Block
 	CodeGenFnMap              map[byte]func(ast.Node) Register
 	infixGenFnMap             map[OpTypePair]func(ast.Node) Register
 	numberOfActiveAllocations map[int]int
 	numRegisterPushesToStack  int
 	Program                   pcode.Program
 	NumberOfRegisters         int
+	SymTab                    map[string]ast.Location //Maps identifiers to their location on the stack
 }
 
-func NewGenerator(st []ast.Node, registerCountInTargetMachine int) *Generator {
+func NewGenerator(st ast.Block, registerCountInTargetMachine int) *Generator {
 	ret_val := &Generator{}
 	ret_val.SyntaxTree = st
 	ret_val.numRegisterPushesToStack = 0
 	ret_val.NumberOfRegisters = registerCountInTargetMachine
 
 	ret_val.CodeGenFnMap = map[byte]func(ast.Node) Register{
-		ast.INT_NT:   ret_val.genIntCode,
-		ast.INFIX_NT: ret_val.genInfixCode,
+		ast.INT_NT:     ret_val.genIntCode,
+		ast.INFIX_NT:   ret_val.genInfixCode,
+		ast.LETINIT_NT: ret_val.genLetInit,
+		ast.IDENT_NT:   ret_val.genIdentCode,
 	}
 
 	ret_val.numberOfActiveAllocations = make(map[int]int)
@@ -45,6 +48,8 @@ func NewGenerator(st []ast.Node, registerCountInTargetMachine int) *Generator {
 		{"/", ast.INT}: ret_val.mkInfixOpFuncInt(pcode.DIV_REG_INT_INT, pcode.DIV_REG_REG_INT),
 	}
 
+	ret_val.SymTab = make(map[string]ast.Location)
+
 	return ret_val
 }
 
@@ -53,7 +58,8 @@ func (g *Generator) raiseError(n, m string, tok tokens.Token) {
 }
 
 func (g *Generator) GenPCode() {
-	for _, stmt := range g.SyntaxTree {
+	g.pushStackFrame(g.SyntaxTree.NumStackVars)
+	for _, stmt := range g.SyntaxTree.Exprs {
 		reg := g.appendCodeFor(stmt)
 		g.ReleaseRegister(reg)
 	}
