@@ -1,0 +1,35 @@
+Preface On Pcode
+
+The pcode generated assumes the following "imaginary" architecture
+    4 General Purpose Registers (1, 2, 3, 4)
+    A Stack that grows upwards
+    A Stack Pointer Register (-1)
+    A Stack Frame Pointer Register (-2)
+
+
+These Constructs will be translated into their x86 equivalents
+    RAX, RBX, RCX, & RDX for general purpose Registers
+    A stack that grows downwards (?)
+    A stack pointer register at ss
+    A stack framer pointer register at r8
+    A register for stack pointer arithmetic at r9 (?)
+
+Notes On the Mod R/M Byte
+    The mod r/m byte is used in instructions that access memory. The Byte
+    encodes information about a register, and an addressing mode that will
+    be used when accessing values in memory
+
+
+
+
+TODO: ???
+    Expand the pcode generator to generate code
+    that will make use of the extra registers out to r15
+    
+    Track down failed register decoding
+    Validate generated elf
+
+Questions:
+    Does MOV cp or mv?
+    Is our w feild present
+
