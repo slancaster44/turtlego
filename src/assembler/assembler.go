@@ -38,10 +38,12 @@ func NewAssembler(pc *pcode.Program) *Assembler {
 	a.pcodeX86map = map[byte]AssemblerFn{
 		pcode.LOADINT:             x86_64.MovRegImm,
 		pcode.MOV_REG_REG:         x86_64.MovRegReg,
-		pcode.MOV_REG_ADDRESS_REG: x86_64.MovAddrReg,
+		pcode.MOV_REG_ADDRESS_REG: x86_64.MovRegInAddrFromReg,
+		pcode.MOV_REG_REG_ADDRESS: x86_64.MovRegFromRegInAddr,
 		pcode.ADD_REG_INT_INT:     x86_64.AddImmReg,
 		pcode.ADD_REG_REG_INT:     x86_64.AddRegReg,
 		pcode.SUB_REG_INT_INT:     x86_64.SubImmReg,
+		pcode.SUB_REG_REG_INT:     x86_64.SubRegReg,
 		pcode.PUSH_REG:            x86_64.PushReg,
 		pcode.POP:                 x86_64.PopReg, //TODO: Change to POP
 	}

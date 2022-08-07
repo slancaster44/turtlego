@@ -22,9 +22,10 @@ func (p *Parser) parseLet() ast.Node {
 
 	p.lxr.MoveUp()
 	expr := p.parseExpr(0)
+	locationOnStack := len(p.typetables[0].Entries)
+
 	p.addTypetableEntry(id, expr.TypeGenerated())
 	scopeDepth := len(p.typetables)
-	locationOnStack := len(p.typetables[0].Entries)
 
 	l := ast.Location{true, locationOnStack, scopeDepth}
 

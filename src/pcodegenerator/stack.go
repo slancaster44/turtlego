@@ -15,7 +15,7 @@ func (g *Generator) genPopToReg(r int) {
 func (g *Generator) pushStackFrame(numVars int) {
 
 	reg := g.GetRegister()
-	ins := &pcode.Instruction{pcode.LOADINT, []int{reg.RegisterNumber, numVars}}
+	ins := &pcode.Instruction{pcode.LOADINT, []int{reg.RegisterNumber, numVars * 8}} //TODO: Generalize
 	g.Program.WriteInstruction(ins)
 
 	ins = &pcode.Instruction{pcode.ADD_REG_REG_INT, []int{pcode.STACK_POINTER, reg.RegisterNumber}}

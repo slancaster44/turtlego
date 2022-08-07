@@ -63,6 +63,12 @@ func (g *Generator) GenPCode() {
 		reg := g.appendCodeFor(stmt)
 		g.ReleaseRegister(reg)
 	}
+
+	if g.numRegisterPushesToStack != 0 {
+		g.raiseError("Generator",
+			"This is a bug, not all registers where properly deallocated during code generation",
+			g.SyntaxTree.Tok)
+	}
 }
 
 func (g *Generator) appendCodeFor(stmt ast.Node) Register {

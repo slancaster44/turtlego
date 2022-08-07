@@ -1,4 +1,6 @@
-let a = 10
-#let b = 11
+let a = 65
+let b = 66
+let c = 67
 
-#a + b
+
+a + b - c #Should be 64
