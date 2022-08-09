@@ -7,6 +7,8 @@ import (
 	"turtlego/src/tokens"
 )
 
+const STACK_VAR_SIZE int = 8
+
 type OpTypePair struct {
 	Op  string
 	Typ byte
@@ -16,8 +18,9 @@ type Generator struct {
 	SyntaxTree                ast.Block
 	CodeGenFnMap              map[byte]func(ast.Node) Register
 	infixGenFnMap             map[OpTypePair]func(ast.Node) Register
-	numberOfActiveAllocations map[int]int
-	numRegisterPushesToStack  int
+	builtinsGenMap            map[string]func(*ast.Builtin) Register
+	numberOfActiveAllocations map[int]int //Maps a given register to the number of times it has been allocated
+	numRegisterPushesToStack  int         //Number of total saved register values on stack
 	Program                   pcode.Program
 	NumberOfRegisters         int
 	SymTab                    map[string]ast.Location //Maps identifiers to their location on the stack
@@ -34,6 +37,7 @@ func NewGenerator(st ast.Block, registerCountInTargetMachine int) *Generator {
 		ast.INFIX_NT:   ret_val.genInfixCode,
 		ast.LETINIT_NT: ret_val.genLetInit,
 		ast.IDENT_NT:   ret_val.genIdentCode,
+		ast.BUILTIN_NT: ret_val.genBuiltinCode,
 	}
 
 	ret_val.numberOfActiveAllocations = make(map[int]int)
@@ -46,6 +50,10 @@ func NewGenerator(st ast.Block, registerCountInTargetMachine int) *Generator {
 		{"-", ast.INT}: ret_val.mkInfixOpFuncInt(pcode.SUB_REG_INT_INT, pcode.SUB_REG_REG_INT),
 		{"*", ast.INT}: ret_val.mkInfixOpFuncInt(pcode.MUL_REG_INT_INT, pcode.MUL_REG_REG_INT),
 		{"/", ast.INT}: ret_val.mkInfixOpFuncInt(pcode.DIV_REG_INT_INT, pcode.DIV_REG_REG_INT),
+	}
+
+	ret_val.builtinsGenMap = map[string]func(*ast.Builtin) Register{
+		"print": ret_val.genPrintCode,
 	}
 
 	ret_val.SymTab = make(map[string]ast.Location)
@@ -65,7 +73,7 @@ func (g *Generator) GenPCode() {
 	}
 
 	if g.numRegisterPushesToStack != 0 {
-		g.raiseError("Generator",
+		g.raiseError("Generatation",
 			"This is a bug, not all registers where properly deallocated during code generation",
 			g.SyntaxTree.Tok)
 	}
@@ -75,7 +83,7 @@ func (g *Generator) appendCodeFor(stmt ast.Node) Register {
 	fn, ok := g.CodeGenFnMap[stmt.NodeType()]
 
 	if !ok {
-		g.raiseError("Generation", "Unimplemented node type", stmt.GetTok())
+		g.raiseError("Generation", "This is a bug, unimplemented node type", stmt.GetTok())
 	}
 
 	return fn(stmt)

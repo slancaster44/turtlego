@@ -30,6 +30,8 @@ const (
 	MOV_REG_REG
 	MOV_REG_ADDRESS_REG //Move from a register to the address in a register
 	MOV_REG_REG_ADDRESS //Move from an address in a register to a register
+
+	BUILTIN_CALL //bc <builtin_id> <reg_with_arg>
 )
 
 const (
@@ -39,6 +41,10 @@ const (
 	REG2                    int = 1
 	REG3                    int = 2
 	REG4                    int = 3
+)
+
+const (
+	BUILTIN_PRINT int = iota
 )
 
 var InstructionMnemonicMap = map[byte]string{
@@ -60,6 +66,8 @@ var InstructionMnemonicMap = map[byte]string{
 
 	MUL_REG_INT_INT: "mul_reg_int_int",
 	MUL_REG_REG_INT: "mul_reg_reg_int",
+
+	BUILTIN_CALL: "builtin_call",
 }
 
 func (i *Instruction) Stringify() string {

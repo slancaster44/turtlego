@@ -59,15 +59,16 @@ func New(lexer *lexer.Lexer) *Parser {
 	 */
 	p.prefixParseFns = map[byte]prefixFn{
 		//tokens.STR:         p.parseStr,
-		tokens.FLT:    p.parseFlt,
-		tokens.INT:    p.parseInt,
-		tokens.BOOL:   p.parseBool,
-		tokens.IDENT:  p.parseIdent,
-		tokens.POP:    p.parsePrefix,
-		tokens.OP1:    p.parsePrefix, //'+' and '-'
-		tokens.LPAREN: p.parseLParen,
-		tokens.LET:    p.parseLet,
-		tokens.LCURL:  p.parseBlock,
+		tokens.FLT:     p.parseFlt,
+		tokens.INT:     p.parseInt,
+		tokens.BOOL:    p.parseBool,
+		tokens.IDENT:   p.parseIdent,
+		tokens.POP:     p.parsePrefix,
+		tokens.OP1:     p.parsePrefix, //'+' and '-'
+		tokens.LPAREN:  p.parseLParen,
+		tokens.LET:     p.parseLet,
+		tokens.LCURL:   p.parseBlock,
+		tokens.BUILTIN: p.parseBuiltin,
 	}
 
 	p.infixParseFns = map[byte]infixFn{

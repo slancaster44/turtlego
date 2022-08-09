@@ -17,7 +17,6 @@ func (p *Generator) genIntCode(stmt ast.Node) Register {
 
 func (g *Generator) genIdentCode(stmt ast.Node) Register {
 	ident := stmt.(*ast.Identifier).Value
-	var_size := typeSizeMap[stmt.TypeGenerated()]
 	location := g.SymTab[ident]
 
 	location_reg := g.GetRegister()
@@ -25,8 +24,8 @@ func (g *Generator) genIdentCode(stmt ast.Node) Register {
 	ins := &pcode.Instruction{pcode.MOV_REG_REG, []int{location_reg.RegisterNumber, pcode.STACK_FRAME_POINTER_REG}}
 	g.Program.WriteInstruction(ins)
 
-	ins = &pcode.Instruction{pcode.SUB_REG_INT_INT,
-		[]int{location_reg.RegisterNumber, location.LocationOnStack * var_size}}
+	ins = &pcode.Instruction{pcode.ADD_REG_INT_INT,
+		[]int{location_reg.RegisterNumber, location.LocationOnStack * STACK_VAR_SIZE}}
 	g.Program.WriteInstruction(ins)
 
 	reg := g.GetRegister()

@@ -45,4 +45,5 @@ var keywords = map[string]byte{
 	"flt":   tokens.FLT_T,
 	"true":  tokens.BOOL,
 	"false": tokens.BOOL,
+	"print": tokens.BUILTIN,
 }

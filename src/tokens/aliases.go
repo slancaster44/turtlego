@@ -35,4 +35,6 @@ const (
 	FLT_T
 	INT_T
 	STR_T
+
+	BUILTIN
 )

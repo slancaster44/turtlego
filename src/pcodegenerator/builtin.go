@@ -1,0 +1,29 @@
+package pcodegenerator
+
+import (
+	"turtlego/src/ast"
+	"turtlego/src/pcode"
+)
+
+func (g *Generator) genBuiltinCode(n ast.Node) Register {
+	bn := n.(*ast.Builtin)
+
+	fn, ok := g.builtinsGenMap[bn.Name]
+	if !ok {
+		g.raiseError("Generator", "No generation fn for builtin", n.GetTok())
+	}
+
+	return fn(bn)
+}
+
+func (g *Generator) genPrintCode(n *ast.Builtin) Register {
+
+	for _, arg := range n.Args {
+		reg := g.appendCodeFor(arg)
+		ins := pcode.Instruction{pcode.BUILTIN_CALL, []int{pcode.BUILTIN_PRINT, reg.RegisterNumber}}
+		g.Program.WriteInstruction(&ins)
+		g.ReleaseRegister(reg)
+	}
+
+	return g.genIntCode(&ast.Int{0, n.GetTok()})
+}

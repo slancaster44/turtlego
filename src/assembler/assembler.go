@@ -46,6 +46,7 @@ func NewAssembler(pc *pcode.Program) *Assembler {
 		pcode.SUB_REG_REG_INT:     x86_64.SubRegReg,
 		pcode.PUSH_REG:            x86_64.PushReg,
 		pcode.POP:                 x86_64.PopReg, //TODO: Change to POP
+		pcode.BUILTIN_CALL:        x86_64.Builtin,
 	}
 	a.exitFnsMap = map[byte]func() []byte{
 		X86_64: x86_64.ExitX86,

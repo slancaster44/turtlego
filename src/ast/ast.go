@@ -26,4 +26,6 @@ const (
 	STRING_NT
 	FLOAT_NT
 	INT_NT
+
+	BUILTIN_NT
 )

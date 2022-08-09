@@ -18,7 +18,7 @@ func (g *Generator) pushStackFrame(numVars int) {
 	ins := &pcode.Instruction{pcode.LOADINT, []int{reg.RegisterNumber, numVars * 8}} //TODO: Generalize
 	g.Program.WriteInstruction(ins)
 
-	ins = &pcode.Instruction{pcode.ADD_REG_REG_INT, []int{pcode.STACK_POINTER, reg.RegisterNumber}}
+	ins = &pcode.Instruction{pcode.SUB_REG_REG_INT, []int{pcode.STACK_POINTER, reg.RegisterNumber}}
 	g.Program.WriteInstruction(ins)
 
 	ins = &pcode.Instruction{pcode.MOV_REG_REG, []int{pcode.STACK_FRAME_POINTER_REG, pcode.STACK_POINTER}}
