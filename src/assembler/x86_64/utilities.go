@@ -6,7 +6,7 @@ import (
 	"turtlego/src/pcode"
 )
 
-//TODO: Ensure this is producing correct values
+// TODO: Ensure this is producing correct values
 func mkIntByteArray(num int) []byte {
 	out := make([]byte, 4)
 	binary.LittleEndian.PutUint32(out, uint32(num))
@@ -21,6 +21,8 @@ const (
 	RDX = 0x02
 	RBX = 0x03
 
+	RSI = 0x06
+
 	SP = 0x04
 	BP = 0x05
 )
@@ -32,11 +34,14 @@ var registerMap = map[int]byte{
 	pcode.REG2:                    RBX,
 	pcode.REG3:                    RCX,
 	pcode.REG4:                    RDX,
+	pcode.REG4 + 1:                RSI,
 }
 
-//Warning: At this point, the encoding assumes that
-//the selected instruction encodes its registers
-//as 11XX XXXX (C0 + Register Encoding)
+const STACK_VAR_SIZE = 0x08
+
+// Warning: At this point, the encoding assumes that
+// the selected instruction encodes its registers
+// as 11XX XXXX C0 + Register Encoding
 func dualRegisterEncoding(d, s int) byte {
 
 	source, ok := registerMap[s]
@@ -59,4 +64,8 @@ func singleRegisterEncoding(r int) byte {
 		panic(fmt.Sprintf("Failed to lookup reigster '%d' for single reigster encoding", r))
 	}
 	return REGISTER_BASE + rval
+}
+
+func genAuxInstruction(fn assemblerFn, args ...int) ([]byte, []byte) {
+	return fn(pcode.Instruction{0, args})
 }

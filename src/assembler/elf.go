@@ -44,7 +44,7 @@ func (a *Assembler) BuildElfHeader() {
 	a.WriteOutput(0x01)
 
 	//Indicate Target OS ABI
-	a.WriteOutput(0x00)
+	a.WriteOutput(0x03)
 
 	//Indicate ABI Version
 	a.WriteOutput(0x00)
