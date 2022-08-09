@@ -20,8 +20,7 @@ func (g *Generator) genPrintCode(n *ast.Builtin) Register {
 
 	for _, arg := range n.Args {
 		reg := g.appendCodeFor(arg)
-		ins := pcode.Instruction{pcode.BUILTIN_CALL, []int{pcode.BUILTIN_PRINT, reg.RegisterNumber}}
-		g.Program.WriteInstruction(&ins)
+		g.WriteInstruction(pcode.BUILTIN_CALL, pcode.BUILTIN_PRINT, reg.RegisterNumber)
 		g.ReleaseRegister(reg)
 	}
 

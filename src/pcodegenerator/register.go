@@ -21,6 +21,7 @@ type Register struct {
 	LocationOfOldContentsOnStack int
 }
 
+// TODO: Make private
 func (g *Generator) GetRegister() Register {
 	selectedRegister := 0
 	numberActiveAllocationsOnThisReg := 5 //TODO: Make pretty (no magic numbers)
@@ -50,6 +51,7 @@ func (g *Generator) lockRegister(r Register) {
 	g.numberOfActiveAllocations[r.RegisterNumber]++
 }
 
+// TODO: Make private
 func (g *Generator) ReleaseRegister(r Register) {
 	if r.LocationOfOldContentsOnStack != g.numRegisterPushesToStack {
 		fmt.Println(r.LocationOfOldContentsOnStack, g.numRegisterPushesToStack)

@@ -3,26 +3,20 @@ package pcodegenerator
 import "turtlego/src/pcode"
 
 func (g *Generator) genPushRegToStack(r int) {
-	i := pcode.Instruction{pcode.PUSH_REG, []int{r}}
-	g.Program.WriteInstruction(&i)
+	g.WriteInstruction(pcode.PUSH_REG, r)
 }
 
 func (g *Generator) genPopToReg(r int) {
-	i := pcode.Instruction{pcode.POP, []int{r}}
-	g.Program.WriteInstruction(&i)
+	g.WriteInstruction(pcode.POP, r)
 }
 
 func (g *Generator) pushStackFrame(numVars int) {
 
 	reg := g.GetRegister()
-	ins := &pcode.Instruction{pcode.LOADINT, []int{reg.RegisterNumber, numVars * 8}} //TODO: Generalize
-	g.Program.WriteInstruction(ins)
 
-	ins = &pcode.Instruction{pcode.SUB_REG_REG_INT, []int{pcode.STACK_POINTER, reg.RegisterNumber}}
-	g.Program.WriteInstruction(ins)
-
-	ins = &pcode.Instruction{pcode.MOV_REG_REG, []int{pcode.STACK_FRAME_POINTER_REG, pcode.STACK_POINTER}}
-	g.Program.WriteInstruction(ins)
+	g.WriteInstruction(pcode.LOADINT, reg.RegisterNumber, numVars*STACK_VAR_SIZE)
+	g.WriteInstruction(pcode.SUB_REG_REG_INT, pcode.STACK_POINTER, reg.RegisterNumber)
+	g.WriteInstruction(pcode.MOV_REG_REG, pcode.STACK_FRAME_POINTER_REG, pcode.STACK_POINTER)
 
 	g.ReleaseRegister(reg)
 }

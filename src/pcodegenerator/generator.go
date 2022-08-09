@@ -88,3 +88,8 @@ func (g *Generator) appendCodeFor(stmt ast.Node) Register {
 
 	return fn(stmt)
 }
+
+func (g *Generator) WriteInstruction(opcode byte, args ...int) {
+	ins := pcode.MkInstruction(opcode, args...)
+	g.Program.WriteInstruction(ins)
+}

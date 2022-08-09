@@ -9,8 +9,7 @@ func (p *Generator) genIntCode(stmt ast.Node) Register {
 	number := stmt.(*ast.Int).Value
 	reg := p.GetRegister()
 
-	ins := &pcode.Instruction{pcode.LOADINT, []int{reg.RegisterNumber, number}}
-	p.Program.WriteInstruction(ins)
+	p.WriteInstruction(pcode.LOADINT, reg.RegisterNumber, number)
 
 	return reg
 }
@@ -21,17 +20,12 @@ func (g *Generator) genIdentCode(stmt ast.Node) Register {
 
 	location_reg := g.GetRegister()
 
-	ins := &pcode.Instruction{pcode.MOV_REG_REG, []int{location_reg.RegisterNumber, pcode.STACK_FRAME_POINTER_REG}}
-	g.Program.WriteInstruction(ins)
-
-	ins = &pcode.Instruction{pcode.ADD_REG_INT_INT,
-		[]int{location_reg.RegisterNumber, location.LocationOnStack * STACK_VAR_SIZE}}
-	g.Program.WriteInstruction(ins)
+	g.WriteInstruction(pcode.MOV_REG_REG, location_reg.RegisterNumber, pcode.STACK_FRAME_POINTER_REG)
+	g.WriteInstruction(pcode.ADD_REG_INT_INT, location_reg.RegisterNumber, location.LocationOnStack*STACK_VAR_SIZE)
 
 	reg := g.GetRegister()
 
-	ins = &pcode.Instruction{pcode.MOV_REG_REG_ADDRESS, []int{reg.RegisterNumber, location_reg.RegisterNumber}}
-	g.Program.WriteInstruction(ins)
+	g.WriteInstruction(pcode.MOV_REG_REG_ADDRESS, reg.RegisterNumber, location_reg.RegisterNumber)
 
 	g.ReleaseRegister(location_reg)
 

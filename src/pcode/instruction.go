@@ -82,3 +82,7 @@ func (i *Instruction) Stringify() string {
 func (i *Instruction) Print() {
 	fmt.Println(i.Stringify())
 }
+
+func MkInstruction(opcode byte, args ...int) *Instruction {
+	return &Instruction{opcode, args}
+}
