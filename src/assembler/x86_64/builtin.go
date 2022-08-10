@@ -51,8 +51,12 @@ func printBuiltin(ins pcode.Instruction) ([]byte, []byte) {
 	i, _ = genAuxInstruction(MovRegImm, pcode.REG4, STACK_VAR_SIZE)
 	code = append(code, i...)
 
-	//int 80h
+	//make syscall
 	code = append(code, syscall...)
+
+	//Pop value printed from stack
+	i, _ = genAuxInstruction(PopReg, reg_to_printed)
+	code = append(code, i...)
 
 	//Restore Registers
 	code = append(code, codeToPopPrimaryRegisters()...)
