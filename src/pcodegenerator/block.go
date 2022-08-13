@@ -6,7 +6,7 @@ func (g *Generator) genBlockCode(n ast.Node) Register {
 	block := n.(*ast.Block)
 
 	var reg Register
-	g.pushStackFrame(block.NumStackVars)
+	g.pushStackFrame(block.NumStackVars, block.ScopeDepth)
 
 	for iter, stmt := range block.Exprs {
 		reg = g.appendCodeFor(stmt)

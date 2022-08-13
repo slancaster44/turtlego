@@ -11,6 +11,7 @@ const (
 	LOADINT byte = iota
 
 	PUSH_REG
+	PUSH_INT
 	POP
 
 	//These instructions take the form:
@@ -31,7 +32,12 @@ const (
 	MOV_REG_ADDRESS_REG //Move from a register to the address in a register
 	MOV_REG_REG_ADDRESS //Move from an address in a register to a register
 
+	CMP_REG_REG_INT
+	JMZ_REG //Jump if register is zero
+	JMP
+
 	BUILTIN_CALL //bc <builtin_id> <reg_with_arg>
+	NOP
 )
 
 const (
@@ -51,6 +57,7 @@ var InstructionMnemonicMap = map[byte]string{
 	LOADINT:         "loadint",
 	ADD_REG_INT_INT: "add_reg_int_int",
 	PUSH_REG:        "push_reg",
+	PUSH_INT:        "push_int",
 	POP:             "pop",
 	ADD_REG_REG_INT: "add_reg_reg_int",
 
@@ -66,6 +73,10 @@ var InstructionMnemonicMap = map[byte]string{
 
 	MUL_REG_INT_INT: "mul_reg_int_int",
 	MUL_REG_REG_INT: "mul_reg_reg_int",
+
+	NOP:     "nop",
+	JMP:     "jmp",
+	JMZ_REG: "jmz_reg",
 
 	BUILTIN_CALL: "builtin_call",
 }

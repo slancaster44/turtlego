@@ -46,4 +46,6 @@ var keywords = map[string]byte{
 	"true":  tokens.BOOL,
 	"false": tokens.BOOL,
 	"print": tokens.BUILTIN,
+	"if":    tokens.IF,
+	"else":  tokens.ELSE,
 }

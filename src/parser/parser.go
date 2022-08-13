@@ -48,7 +48,7 @@ type Parser struct {
 	prefixOperatorTypeMap   map[string][]byte
 	prefixOperatorOutputMap map[operatorInputOutputKey]byte
 
-	typetables []TypeTable
+	symtabs []SymTab
 }
 
 func New(lexer *lexer.Lexer) *Parser {
@@ -69,6 +69,7 @@ func New(lexer *lexer.Lexer) *Parser {
 		tokens.LET:     p.parseLet,
 		tokens.LCURL:   p.parseBlock,
 		tokens.BUILTIN: p.parseBuiltin,
+		tokens.IF:      p.parseIfEl,
 	}
 
 	p.infixParseFns = map[byte]infixFn{
@@ -137,24 +138,25 @@ func New(lexer *lexer.Lexer) *Parser {
 		{"!", ast.BOOL}: ast.BOOL,
 	}
 
-	p.typetables = []TypeTable{NewTypeTable()}
+	p.symtabs = []SymTab{NewSymtab()}
 
 	return p
 }
 
-func (p *Parser) addTypetableEntry(ident string, Type byte) {
-	p.typetables[0].Entries[ident] = Type
+func (p *Parser) addSymtabEntry(ident string, Type byte, location int) {
+
+	p.symtabs[0].Entries[ident] = TableEntry{location, Type}
 }
 
-func (p *Parser) searchTypeTable(ident string) (byte, int) {
-	for i, table := range p.typetables {
-		varType, ok := table.Entries[ident]
+func (p *Parser) searchSymtab(ident string) (TableEntry, int) {
+	for i, table := range p.symtabs {
+		varInfo, ok := table.Entries[ident]
 		if ok {
-			return varType, len(p.typetables) - i
+			return varInfo, len(p.symtabs) - i
 		}
 	}
 
-	return ast.NO_TYPE, 0
+	return TableEntry{0, ast.NO_TYPE}, 0
 }
 
 func (p *Parser) raiseError(n, m string) {
@@ -171,7 +173,7 @@ func (p *Parser) ParseProgram() {
 		p.skipWhitespace()
 
 	}
-	p.Tree = ast.Block{tree, ast.INT, len(p.typetables[0].Entries), tree[0].GetTok()}
+	p.Tree = ast.Block{tree, ast.INT, len(p.symtabs[0].Entries), len(p.symtabs), tree[0].GetTok()}
 }
 
 func (p *Parser) parseExpr(prec int) ast.Node {

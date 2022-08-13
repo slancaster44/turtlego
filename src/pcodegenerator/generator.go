@@ -8,6 +8,8 @@ import (
 )
 
 const STACK_VAR_SIZE int = 8
+const SIZE_OF_STACK_METADATA int = (STACK_VAR_SIZE * 2)
+const UNKOWN_ADDRESS int = 0
 
 type OpTypePair struct {
 	Op  string
@@ -39,6 +41,8 @@ func NewGenerator(st ast.Block, registerCountInTargetMachine int) *Generator {
 		ast.IDENT_NT:   ret_val.genIdentCode,
 		ast.BUILTIN_NT: ret_val.genBuiltinCode,
 		ast.BLOCK_NT:   ret_val.genBlockCode,
+		ast.BOOLEAN_NT: ret_val.genBoolCode,
+		ast.IFEL_NT:    ret_val.genIfElse,
 	}
 
 	ret_val.numberOfActiveAllocations = make(map[int]int)
@@ -67,7 +71,7 @@ func (g *Generator) raiseError(n, m string, tok tokens.Token) {
 }
 
 func (g *Generator) GenPCode() {
-	g.pushStackFrame(g.SyntaxTree.NumStackVars)
+	g.pushStackFrame(g.SyntaxTree.NumStackVars, g.SyntaxTree.ScopeDepth)
 	for _, stmt := range g.SyntaxTree.Exprs {
 		reg := g.appendCodeFor(stmt)
 		g.ReleaseRegister(reg)
@@ -90,7 +94,13 @@ func (g *Generator) appendCodeFor(stmt ast.Node) Register {
 	return fn(stmt)
 }
 
-func (g *Generator) WriteInstruction(opcode byte, args ...int) {
+// Writes an instruction to code, returns a pointer to that instruction
+// as well as the location of that instruction in code
+func (g *Generator) WriteInstruction(opcode byte, args ...int) (*pcode.Instruction, int) {
+	locOfIns := len(g.Program.Instructions)
+
 	ins := pcode.MkInstruction(opcode, args...)
 	g.Program.WriteInstruction(ins)
+
+	return ins, locOfIns
 }

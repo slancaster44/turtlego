@@ -22,10 +22,20 @@ func (p *Parser) parseLet() ast.Node {
 
 	p.lxr.MoveUp()
 	expr := p.parseExpr(0)
-	locationOnStack := len(p.typetables[0].Entries)
 
-	p.addTypetableEntry(id, expr.TypeGenerated())
-	scopeDepth := len(p.typetables)
+	var locationOnStack int
+
+	//If the variable already exists in this scope then we need it's location to
+	//be the already allocated space
+	_, ok := p.symtabs[0].Entries[id]
+	if !ok {
+		locationOnStack = len(p.symtabs[0].Entries)
+	} else {
+		locationOnStack = p.symtabs[0].Entries[id].LocationOnStack
+	}
+
+	p.addSymtabEntry(id, expr.TypeGenerated(), locationOnStack)
+	scopeDepth := len(p.symtabs)
 
 	l := ast.Location{true, locationOnStack, scopeDepth}
 

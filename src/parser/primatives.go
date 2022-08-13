@@ -29,7 +29,7 @@ func (p *Parser) parseInt() ast.Node {
 	return n
 }
 
-/////////////////////////////////////////////////
+// ///////////////////////////////////////////////
 // "<text>" or '<text>
 func (p *Parser) parseStr() ast.Node {
 	v := p.lxr.CurTok.Value
@@ -39,8 +39,8 @@ func (p *Parser) parseStr() ast.Node {
 	return n
 }
 
-/////////////////////////////////////////////////
-//Syntax: true OR false
+// ///////////////////////////////////////////////
+// Syntax: true OR false
 func (p *Parser) parseBool() ast.Node {
 	v, err := strconv.ParseBool(p.lxr.CurTok.Value)
 
@@ -53,17 +53,17 @@ func (p *Parser) parseBool() ast.Node {
 	return n
 }
 
-/////////////////////////////////////////////////
-//Syntax: <ident>
+// ///////////////////////////////////////////////
+// Syntax: <ident>
 func (p *Parser) parseIdent() ast.Node {
 	v := p.lxr.CurTok.Value
 
-	t, depth := p.searchTypeTable(v)
-	if t == ast.NO_TYPE {
+	t, depth := p.searchSymtab(v)
+	if t.Type == ast.NO_TYPE {
 		p.raiseError("Identifier", "Could not resolve identifier '"+v+"'")
 	}
 
-	n := &ast.Identifier{v, p.lxr.CurTok, depth, t}
+	n := &ast.Identifier{v, p.lxr.CurTok, depth, t.Type}
 	p.lxr.MoveUp()
 
 	return n

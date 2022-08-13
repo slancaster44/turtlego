@@ -3,6 +3,7 @@ package x86_64
 import (
 	"encoding/binary"
 	"fmt"
+	"turtlego/src/assembler/backpatch"
 	"turtlego/src/pcode"
 )
 
@@ -66,6 +67,10 @@ func singleRegisterEncoding(r int) byte {
 	return REGISTER_BASE + rval
 }
 
-func genAuxInstruction(fn assemblerFn, args ...int) ([]byte, []byte) {
+func genAuxInstruction(fn assemblerFn, args ...int) ([]byte, []byte, []backpatch.BackPatch) {
 	return fn(pcode.Instruction{0, args})
+}
+
+func MkTrueBackPatchAddress(targetAddress int, addressOfCode int) []byte {
+	return mkIntByteArray(targetAddress - addressOfCode - 0x06) //TODO: 0x06 WTF??????!?!!!?!?
 }

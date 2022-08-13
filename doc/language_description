@@ -17,7 +17,6 @@ Infix Operators:
     -  :: Input: int, flt, output: same as input
     /  :: ''     ''
     *  :: ''     ''
-    ** :: ''     ''
 
 Prefix Operators:
     - :: Input int, flt, output: same
@@ -32,6 +31,17 @@ Blocks
 
 Functions:
     fn (<type> <ident>, ...) <type> 
+
+Primative Types:
+    int 
+    flt
+    str
+    char
+    bool
+
+Type aliasing
+    type <ident> = <type>
+    type <ident> = (<type>, <type>, <type>)
 
 Stack Frame                         Location of first byte
     values in this scope            :: ...
@@ -48,24 +58,27 @@ Stack Frame                         Location of first byte
     value of R2 when looping back   :: SP - 72
     return values                   :: ...
 
-Instructions to:
-    access value in this scope  :: LOAD (SP + <offset on stack>)
-    access value in prior scope :: LOAD <R1> into (SP - 64)
-                                   LOAD <R2> into (SP - 72)
-                                   LOAD <depth var found> into <R1>
-                                   LOAD ((SP-16) - 24) into R2
-                                   IFEQ <R1> <R2> : Pull val from this frame
-                                   ELSE continue
-    Push Frame :: Calculate size of stored vals as TV (Top of values)
-               :: Save register values into TV + 8 + 8 + size of returns
-               :: push next scope depth 
-               :: push current SP
-               :: push return code address
-               :: push paramaters
-               :: pass control to new code
+Pseudocode For Finding vars
+    if <cur_scope> == <scope_of_var> {
+        MOV <reg> (<stack_frame_pointer> <stack offset>)
+    } else {
+        while <reg_for_current_sf>-<offset_to_scope_id> != <scope_of_var>  {
+            MOV <reg_for_current_sf> <pointer_to_last_sf>
+        }
+        MOV <reg> (<reg_for_curreng_sf> <stack_offset>)
+    }
 
-    POP Frame  :: Push return values to reserved space in SP - 80...
-               :: Change SP to (SP - 16)
-               :: Return control to return address
-
-                                   
+    //IN ASM
+        mov reg2 stack_frame_pointer
+        mov reg1 (reg2 + 0x08) //Load current scope ident id
+        cmp reg1 <necessary_scope_depth>
+        jne  10
+        jmp 20
+    10:
+        mov reg2 (reg2 + 0x0F) //Load last stack_frame_pointer
+        mov reg1 (reg2 + 0x08)
+        cmp reg1 <necessary_scope_depth>
+        jne 10
+        jmp 20
+    20:
+        mov <reg_reg> (reg2 + <offset_for_var)

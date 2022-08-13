@@ -14,6 +14,19 @@ func (p *Generator) genIntCode(stmt ast.Node) Register {
 	return reg
 }
 
+func (p *Generator) genBoolCode(stmt ast.Node) Register {
+	bl := stmt.(*ast.Boolean).Value
+	reg := p.GetRegister()
+
+	if bl {
+		p.WriteInstruction(pcode.LOADINT, reg.RegisterNumber, 1)
+	} else {
+		p.WriteInstruction(pcode.LOADINT, reg.RegisterNumber, 0)
+	}
+
+	return reg
+}
+
 func (g *Generator) genIdentCode(stmt ast.Node) Register {
 	ident := stmt.(*ast.Identifier).Value
 	location := g.SymTab[ident]

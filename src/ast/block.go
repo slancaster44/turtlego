@@ -9,6 +9,7 @@ type Block struct {
 	Exprs        []Node
 	RetType      byte
 	NumStackVars int
+	ScopeDepth   int
 	Tok          tokens.Token
 }
 

@@ -17,6 +17,9 @@ const (
 	LPAREN
 	RPAREN
 
+	IF
+	ELSE
+
 	POP
 
 	OP1
