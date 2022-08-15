@@ -13,7 +13,7 @@ func (g *Generator) genLetInit(n ast.Node) Register {
 	g.WriteInstruction(pcode.MOV_REG_REG, location_reg.RegisterNumber, pcode.STACK_FRAME_POINTER_REG)
 
 	loc_on_stack := node.LocationInfo.LocationOnStack
-	g.WriteInstruction(pcode.ADD_REG_INT_INT, location_reg.RegisterNumber, loc_on_stack*STACK_VAR_SIZE)
+	g.WriteInstruction(pcode.ADD_REG_INT_INT, location_reg.RegisterNumber, (loc_on_stack*STACK_VAR_SIZE)+SIZE_OF_STACK_METADATA)
 
 	g.WriteInstruction(pcode.MOV_REG_ADDRESS_REG, location_reg.RegisterNumber, result_reg.RegisterNumber)
 

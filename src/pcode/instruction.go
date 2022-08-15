@@ -32,8 +32,10 @@ const (
 	MOV_REG_ADDRESS_REG //Move from a register to the address in a register
 	MOV_REG_REG_ADDRESS //Move from an address in a register to a register
 
-	CMP_REG_REG_INT
+	CMP_REG_INT
 	JMZ_REG //Jump if register is zero
+	JMZ     //Jump if flags register says so
+	JNZ     //Jump if flags register says not to
 	JMP
 
 	BUILTIN_CALL //bc <builtin_id> <reg_with_arg>
@@ -76,7 +78,10 @@ var InstructionMnemonicMap = map[byte]string{
 
 	NOP:     "nop",
 	JMP:     "jmp",
+	JMZ:     "jmz",
 	JMZ_REG: "jmz_reg",
+
+	CMP_REG_INT: "cmp_reg_int",
 
 	BUILTIN_CALL: "builtin_call",
 }

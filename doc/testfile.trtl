@@ -1,17 +1,11 @@
 #Reaching into past scopes not working
 
-let trueVal = true
-let falseVal = false
 
-if trueVal
-    print(70)
-else
-    print(64)
-
-if trueVal
-    let c = 72
-else 
+let a = 65
+let c = 67
+{
+    print(c)
     let b = 66
-
-
-print(c, b)
+    print(a, b, c)
+}
+print(a, c)

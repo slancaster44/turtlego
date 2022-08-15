@@ -54,8 +54,10 @@ func NewAssembler(pc *pcode.Program) *Assembler {
 		pcode.POP:                 x86_64.PopReg, //TODO: Change to POP
 		pcode.BUILTIN_CALL:        x86_64.Builtin,
 		pcode.PUSH_INT:            x86_64.PushInt,
-		pcode.JMZ_REG:             x86_64.JumpIfZero,
+		pcode.JMZ_REG:             x86_64.JumpIfRegZero,
+		pcode.CMP_REG_INT:         x86_64.CmpRegInt,
 		pcode.JMP:                 x86_64.Jump,
+		pcode.JNZ:                 x86_64.JumpIfNotZero,
 		pcode.NOP:                 x86_64.Nop,
 	}
 	a.exitFnsMap = map[byte]func() []byte{
@@ -73,7 +75,7 @@ func (a *Assembler) Assemble(instructionSet byte) {
 		}
 		newCode, newData, backpatches := fn(*instruction)
 
-		a.pcodeAddressToRealAddress[pcodeAddress] = len(a.code) //- 1
+		a.pcodeAddressToRealAddress[pcodeAddress] = len(a.code)
 		//fmt.Printf("%d %x\n", pcodeAddress, 0x400000+len(a.code)+0x40+(2*0x38))
 
 		for _, patch := range backpatches {

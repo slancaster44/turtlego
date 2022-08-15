@@ -72,5 +72,5 @@ func genAuxInstruction(fn assemblerFn, args ...int) ([]byte, []byte, []backpatch
 }
 
 func MkTrueBackPatchAddress(targetAddress int, addressOfCode int) []byte {
-	return mkIntByteArray(targetAddress - addressOfCode - 0x06) //TODO: 0x06 WTF??????!?!!!?!?
+	return mkIntByteArray(targetAddress - addressOfCode)
 }

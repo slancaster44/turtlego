@@ -29,7 +29,7 @@ func (g *Generator) pushStackFrame(numVars int, scopeDepth int) {
 func (g *Generator) popStackFrame(numVars int) {
 	reg := g.GetRegister()
 
-	g.WriteInstruction(pcode.LOADINT, reg.RegisterNumber, numVars*STACK_VAR_SIZE+SIZE_OF_STACK_METADATA)
+	g.WriteInstruction(pcode.LOADINT, reg.RegisterNumber, (numVars*STACK_VAR_SIZE)+SIZE_OF_STACK_METADATA)
 	g.WriteInstruction(pcode.ADD_REG_REG_INT, pcode.STACK_POINTER, reg.RegisterNumber)
 	g.WriteInstruction(pcode.MOV_REG_REG, pcode.STACK_FRAME_POINTER_REG, pcode.STACK_POINTER)
 
