@@ -1,11 +1,4 @@
 #Reaching into past scopes not working
 
-
-let a = 65
-let c = 67
-{
-    print(c)
-    let b = 66
-    print(a, b, c)
-}
-print(a, c)
+#64
+print(16 * 4)

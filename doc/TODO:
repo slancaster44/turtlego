@@ -1,11 +1,3 @@
-... Refractoring Goals ...
-1) Streamline parser variable tracking
-2) Implement variable size stack vars??
-3) Implement if-else --
-4) Handle getting vars in upper scopes
-
--- Consoladate assemblerfn return value
-
 ... Next Steps ...
 1) Implement Multiplication and Division
 2) Implement type awareness for builtins

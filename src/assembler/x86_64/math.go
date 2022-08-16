@@ -62,3 +62,26 @@ func SubRegReg(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
 
 	return code, data, []backpatch.BackPatch{}
 }
+
+var mul_imm_reg []byte = []byte{0x48, 0x69}
+
+func MulImmReg(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
+	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
+
+	code = append(code, mul_imm_reg...)
+	code = append(code, dualRegisterEncoding(ins.Arguments[0], ins.Arguments[0]))
+	code = append(code, mkIntByteArray(ins.Arguments[1])...)
+
+	return code, data, patches
+}
+
+var mul_reg_reg []byte = []byte{0x48, 0x0F, 0xAF}
+
+func MulRegReg(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
+	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
+
+	code = append(code, mul_reg_reg...)
+	code = append(code, dualRegisterEncoding(ins.Arguments[1], ins.Arguments[0]))
+
+	return code, data, patches
+}

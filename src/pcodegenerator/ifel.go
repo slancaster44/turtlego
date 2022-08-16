@@ -13,7 +13,8 @@ func (g *Generator) genIfElse(n ast.Node) Register {
 	cond_reg := g.appendCodeFor(ifelnode.Cond)
 
 	//Jump if zero to false block
-	jmz_reg_ins, _ := g.WriteInstruction(pcode.JMZ_REG, cond_reg.RegisterNumber, UNKOWN_ADDRESS)
+	g.WriteInstruction(pcode.CMP_REG_INT, cond_reg.RegisterNumber, 0x0)
+	jmz_reg_ins, _ := g.WriteInstruction(pcode.JMZ, cond_reg.RegisterNumber, UNKOWN_ADDRESS)
 	g.ReleaseRegister(cond_reg)
 
 	//Code For True Block

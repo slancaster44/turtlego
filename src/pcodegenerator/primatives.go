@@ -30,6 +30,10 @@ func (p *Generator) genBoolCode(stmt ast.Node) Register {
 // Map retrive and print stack depth id
 const OFFSET_FOR_SCOPE_ID int = 0x08
 
+/* This function loops through the stack frames  until we have found the location
+ * of the appropriate stack frame. It then finds the variable we are accessing
+ */
+
 func (g *Generator) genIdentCode(stmt ast.Node) Register {
 	ident := stmt.(*ast.Identifier).Value
 	location := g.SymTab[ident]
@@ -42,7 +46,7 @@ func (g *Generator) genIdentCode(stmt ast.Node) Register {
 	g.WriteInstruction(pcode.ADD_REG_INT_INT, cur_scope_reg.RegisterNumber, OFFSET_FOR_SCOPE_ID)
 	g.WriteInstruction(pcode.MOV_REG_REG_ADDRESS, cur_scope_reg.RegisterNumber, cur_scope_reg.RegisterNumber)
 	g.WriteInstruction(pcode.CMP_REG_INT, cur_scope_reg.RegisterNumber, location.ScopeDepth)
-	jnz, _ := g.WriteInstruction(pcode.JNZ, 0x0)
+	jnz, _ := g.WriteInstruction(pcode.JMZ, 0x0)
 
 	_, start_of_loop :=
 		g.WriteInstruction(pcode.MOV_REG_REG, cur_scope_reg.RegisterNumber, location_reg.RegisterNumber)
@@ -53,7 +57,7 @@ func (g *Generator) genIdentCode(stmt ast.Node) Register {
 	g.WriteInstruction(pcode.ADD_REG_INT_INT, cur_scope_reg.RegisterNumber, OFFSET_FOR_SCOPE_ID)
 	g.WriteInstruction(pcode.MOV_REG_REG_ADDRESS, cur_scope_reg.RegisterNumber, cur_scope_reg.RegisterNumber)
 	g.WriteInstruction(pcode.CMP_REG_INT, cur_scope_reg.RegisterNumber, location.ScopeDepth)
-	jnz2, _ := g.WriteInstruction(pcode.JNZ, 0x0)
+	jnz2, _ := g.WriteInstruction(pcode.JMZ, 0x0)
 	g.WriteInstruction(pcode.JMP, start_of_loop)
 
 	_, end_of_loop :=

@@ -8,6 +8,8 @@ import (
 	"turtlego/src/pcode"
 )
 
+// Functions that will create code for different instruction sets.
+// Returns code, data, and patches
 type AssemblerFn func(pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch)
 
 type Assembler struct {
@@ -50,15 +52,17 @@ func NewAssembler(pc *pcode.Program) *Assembler {
 		pcode.ADD_REG_REG_INT:     x86_64.AddRegReg,
 		pcode.SUB_REG_INT_INT:     x86_64.SubImmReg,
 		pcode.SUB_REG_REG_INT:     x86_64.SubRegReg,
+		pcode.MUL_REG_INT_INT:     x86_64.MulImmReg,
 		pcode.PUSH_REG:            x86_64.PushReg,
-		pcode.POP:                 x86_64.PopReg, //TODO: Change to POP
+		pcode.POP:                 x86_64.PopReg,
 		pcode.BUILTIN_CALL:        x86_64.Builtin,
 		pcode.PUSH_INT:            x86_64.PushInt,
-		pcode.JMZ_REG:             x86_64.JumpIfRegZero,
 		pcode.CMP_REG_INT:         x86_64.CmpRegInt,
 		pcode.JMP:                 x86_64.Jump,
 		pcode.JNZ:                 x86_64.JumpIfNotZero,
+		pcode.JMZ:                 x86_64.JumpIfZero,
 		pcode.NOP:                 x86_64.Nop,
+		pcode.MUL_REG_REG_INT:     x86_64.MulRegReg,
 	}
 	a.exitFnsMap = map[byte]func() []byte{
 		X86_64: x86_64.ExitX86,
