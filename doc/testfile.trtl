@@ -1,4 +1,4 @@
 #Reaching into past scopes not working
 
 #64
-print(16 * 4)
+print(128 / 2)

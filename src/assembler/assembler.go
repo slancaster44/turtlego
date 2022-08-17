@@ -63,6 +63,8 @@ func NewAssembler(pc *pcode.Program) *Assembler {
 		pcode.JMZ:                 x86_64.JumpIfZero,
 		pcode.NOP:                 x86_64.Nop,
 		pcode.MUL_REG_REG_INT:     x86_64.MulRegReg,
+		pcode.DIV_REG_REG_INT:     x86_64.DivRegReg,
+		pcode.DIV_REG_INT_INT:     x86_64.DivImmReg,
 	}
 	a.exitFnsMap = map[byte]func() []byte{
 		X86_64: x86_64.ExitX86,

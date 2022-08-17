@@ -28,6 +28,8 @@ const (
 	BP = 0x05
 )
 
+var primaryRegisters []int = []int{pcode.REG1, pcode.REG2, pcode.REG3, pcode.REG4}
+
 var registerMap = map[int]byte{
 	pcode.STACK_POINTER:           SP,
 	pcode.STACK_FRAME_POINTER_REG: BP,

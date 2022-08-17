@@ -1,5 +1,4 @@
 ... Next Steps ...
-1) Implement Multiplication and Division
 2) Implement type awareness for builtins
 3) Implement booleans, and boolean expressions
 3.5) Implement prefix operators (negative numbers?)
