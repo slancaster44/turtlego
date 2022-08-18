@@ -39,6 +39,11 @@ const (
 
 	BUILTIN_CALL //bc <builtin_id> <reg_with_arg>
 	NOP
+
+	BOOL_OR_REG_REG
+	BOOL_OR_REG_IMM
+	BOOL_AND_REG_REG
+	BOOL_AND_REG_IMM
 )
 
 const (
@@ -82,6 +87,11 @@ var InstructionMnemonicMap = map[byte]string{
 	CMP_REG_INT: "cmp_reg_int",
 
 	BUILTIN_CALL: "builtin_call",
+
+	BOOL_AND_REG_IMM: "bool_and_reg_imm",
+	BOOL_AND_REG_REG: "bool_and_reg_reg",
+	BOOL_OR_REG_IMM:  "bool_or_reg_imm",
+	BOOL_OR_REG_REG:  "bool_or_reg_reg",
 }
 
 func (i *Instruction) Stringify() string {

@@ -30,6 +30,5 @@ TODO: ???
     Validate generated elf
 
 Questions:
-    Does MOV cp or mv?
-    Is our w feild present
+    Stack overflow??
 

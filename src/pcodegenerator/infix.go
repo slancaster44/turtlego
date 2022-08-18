@@ -19,7 +19,7 @@ func (p *Generator) genInfixCode(n ast.Node) Register {
 // on integers. For example, it can take the ADD_REG_INT_INT and the ADD_REG_REG_INT
 // instructions, and generate a function that can convert an addition ast into
 // the proper instructions
-func (p *Generator) mkInfixOpFuncInt(OP_REG_INT_INT, OP_REG_REG_INT byte) func(n ast.Node) Register {
+func (p *Generator) mkInfixOpGenFunc(OP_REG_IMM, OP_REG_REG byte) func(n ast.Node) Register {
 	fn := func(n ast.Node) Register {
 		//Calculate Left Side
 		left := n.(*ast.InfixExpr).Left
@@ -30,11 +30,21 @@ func (p *Generator) mkInfixOpFuncInt(OP_REG_INT_INT, OP_REG_REG_INT byte) func(n
 
 		//If the right side is an integer, we can
 		//add it to R1 as an immediate
-		if right.NodeType() == ast.INT_NT {
-			p.WriteInstruction(OP_REG_INT_INT, reg.RegisterNumber, right.(*ast.Int).Value)
-		} else {
+
+		switch r := right.(type) {
+		case *ast.Int:
+			p.WriteInstruction(OP_REG_IMM, reg.RegisterNumber, r.Value)
+		case *ast.Boolean:
+			var valAsInt int
+			if r.Value {
+				valAsInt = 1
+			} else {
+				valAsInt = 0
+			}
+			p.WriteInstruction(OP_REG_IMM, reg.RegisterNumber, valAsInt)
+		default:
 			reg2 := p.appendCodeFor(right)
-			p.WriteInstruction(OP_REG_REG_INT, reg.RegisterNumber, reg2.RegisterNumber)
+			p.WriteInstruction(OP_REG_REG, reg.RegisterNumber, reg2.RegisterNumber)
 			p.ReleaseRegister(reg2) //The result has been moved to reg1, so we can now release reg2
 		}
 

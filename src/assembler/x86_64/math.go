@@ -175,3 +175,33 @@ func DivRegReg(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
 
 	return code, data, patches
 }
+
+var or_reg_reg []byte = []byte{0x48, 0x09}
+
+func OrRegReg(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
+	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
+
+	code = append(code, or_reg_reg...)
+	code = append(code, dualRegisterEncoding(ins.Arguments[0], ins.Arguments[1]))
+
+	return code, data, patches
+}
+
+var or_reg_imm []byte = []byte{0x40, 0x81}
+
+func OrRegImm(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
+	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
+
+	code = append(code, or_reg_imm...)
+
+	reg := 0xC8 | registerMap[ins.Arguments[0]]
+	code = append(code, reg)
+
+	code = append(code, mkIntByteArray(ins.Arguments[1])...)
+
+	return code, data, patches
+}
+
+func AndRegReg() {}
+
+func AndRegImm() {}
