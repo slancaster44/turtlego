@@ -86,7 +86,8 @@ func printPCode() {
 	pg := pcodegenerator.NewGenerator(prs.Tree, 4)
 	pg.GenPCode()
 
-	for _, i := range pg.Program.Instructions {
+	for x, i := range pg.Program.Instructions {
+		fmt.Print(x, ": ")
 		i.Print()
 	}
 }
