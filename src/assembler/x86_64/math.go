@@ -202,6 +202,30 @@ func OrRegImm(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
 	return code, data, patches
 }
 
-func AndRegReg() {}
+var and_reg_reg []byte = []byte{0x48, 0x21}
 
-func AndRegImm() {}
+func AndRegReg(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
+	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
+
+	code = append(code, and_reg_reg...)
+	code = append(code, dualRegisterEncoding(ins.Arguments[0], ins.Arguments[1]))
+
+	return code, data, patches
+}
+
+var and_reg_imm []byte = []byte{0x48, 0x81}
+var and_reg_imm_adjustment byte = 0xE0
+
+func AndRegImm(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
+	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
+
+	code = append(code, and_reg_imm...)
+
+	reg := and_reg_imm_adjustment | registerMap[ins.Arguments[0]]
+	code = append(code, reg)
+
+	imm := mkIntByteArray(ins.Arguments[1])
+	code = append(code, imm...)
+
+	return code, data, patches
+}
