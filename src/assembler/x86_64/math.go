@@ -236,15 +236,14 @@ func AndRegImm(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
 	return code, data, patches
 }
 
-var cmp_reg_reg []byte = []byte{0x48, 0x39}
 var sete_reg []byte = []byte{0x0F, 0x94}
 
 func EqRegReg(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
 	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
 
 	//Cmp reg1 to reg2
-	code = append(code, cmp_reg_reg...)
-	code = append(code, dualRegisterEncoding(ins.Arguments[0], ins.Arguments[1]))
+	cmp_regs, _, _ := genAuxInstruction(CmpRegReg, ins.Arguments...)
+	code = append(code, cmp_regs...)
 
 	//Clear reg1
 	clr_reg1, _, _ := genAuxInstruction(MovRegImm, ins.Arguments[0], 0x0)
@@ -270,6 +269,40 @@ func EqRegImm(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
 
 	//sete reg1 lowest byte
 	code = append(code, sete_reg...)
+	code = append(code, singleRegisterEncoding(ins.Arguments[0]))
+
+	return code, data, patches
+}
+
+var setne_reg []byte = []byte{0x0F, 0x95}
+
+func NeRegImm(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
+	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
+
+	cmp_regs, _, _ := genAuxInstruction(CmpRegInt, ins.Arguments...)
+	code = append(code, cmp_regs...)
+
+	clr_reg1, _, _ := genAuxInstruction(MovRegImm, ins.Arguments[0], 0x0)
+	code = append(code, clr_reg1...)
+
+	//setne reg1 lowest byte
+	code = append(code, setne_reg...)
+	code = append(code, singleRegisterEncoding(ins.Arguments[0]))
+
+	return code, data, patches
+}
+
+func NeRegReg(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
+	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
+
+	cmp_regs, _, _ := genAuxInstruction(CmpRegReg, ins.Arguments...)
+	code = append(code, cmp_regs...)
+
+	clr_reg1, _, _ := genAuxInstruction(MovRegImm, ins.Arguments[0], 0x0)
+	code = append(code, clr_reg1...)
+
+	//setne reg1 lowest byte
+	code = append(code, setne_reg...)
 	code = append(code, singleRegisterEncoding(ins.Arguments[0]))
 
 	return code, data, patches

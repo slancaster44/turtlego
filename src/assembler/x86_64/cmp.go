@@ -21,3 +21,14 @@ func CmpRegInt(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
 
 	return code, data, patches
 }
+
+var cmp_reg_reg []byte = []byte{0x48, 0x39}
+
+func CmpRegReg(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
+	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
+
+	code = append(code, cmp_reg_reg...)
+	code = append(code, dualRegisterEncoding(ins.Arguments[0], ins.Arguments[1]))
+
+	return code, data, patches
+}

@@ -47,6 +47,9 @@ const (
 
 	EQ_REG_REG
 	EQ_REG_IMM
+
+	NE_REG_REG
+	NE_REG_IMM
 )
 
 const (
@@ -98,6 +101,8 @@ var InstructionMnemonicMap = map[byte]string{
 
 	EQ_REG_IMM: "eq_reg_imm",
 	EQ_REG_REG: "eq_reg_reg",
+	NE_REG_REG: "ne_reg_reg",
+	NE_REG_IMM: "ne_reg_imm",
 }
 
 func (i *Instruction) Stringify() string {
