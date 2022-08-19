@@ -44,6 +44,9 @@ const (
 	BOOL_OR_REG_IMM
 	BOOL_AND_REG_REG
 	BOOL_AND_REG_IMM
+
+	EQ_REG_REG
+	EQ_REG_IMM
 )
 
 const (
@@ -92,6 +95,9 @@ var InstructionMnemonicMap = map[byte]string{
 	BOOL_AND_REG_REG: "bool_and_reg_reg",
 	BOOL_OR_REG_IMM:  "bool_or_reg_imm",
 	BOOL_OR_REG_REG:  "bool_or_reg_reg",
+
+	EQ_REG_IMM: "eq_reg_imm",
+	EQ_REG_REG: "eq_reg_reg",
 }
 
 func (i *Instruction) Stringify() string {

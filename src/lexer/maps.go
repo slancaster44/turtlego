@@ -34,7 +34,6 @@ var doubleChar = map[string]byte{
 	"<=": tokens.OP4,
 	"||": tokens.OP5,
 	"&&": tokens.OP5,
-	"**": tokens.OP3,
 }
 
 var keywords = map[string]byte{

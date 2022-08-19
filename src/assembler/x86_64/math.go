@@ -100,11 +100,17 @@ func DivImmReg(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
 		reg_for_imm = pcode.REG1
 	}
 
+	push_imm_reg, _, _ := genAuxInstruction(PushReg, reg_for_imm)
+	code = append(code, push_imm_reg...)
+
 	mov, _, _ := genAuxInstruction(MovRegImm, reg_for_imm, imm)
 	div, _, _ := genAuxInstruction(DivRegReg, reg, reg_for_imm)
 
 	code = append(code, mov...)
 	code = append(code, div...)
+
+	pop_imm_reg, _, _ := genAuxInstruction(PopReg, reg_for_imm)
+	code = append(code, pop_imm_reg...)
 
 	return code, data, patches
 }
@@ -226,6 +232,45 @@ func AndRegImm(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
 
 	imm := mkIntByteArray(ins.Arguments[1])
 	code = append(code, imm...)
+
+	return code, data, patches
+}
+
+var cmp_reg_reg []byte = []byte{0x48, 0x39}
+var sete_reg []byte = []byte{0x0F, 0x94}
+
+func EqRegReg(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
+	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
+
+	//Cmp reg1 to reg2
+	code = append(code, cmp_reg_reg...)
+	code = append(code, dualRegisterEncoding(ins.Arguments[0], ins.Arguments[1]))
+
+	//Clear reg1
+	clr_reg1, _, _ := genAuxInstruction(MovRegImm, ins.Arguments[0], 0x0)
+	code = append(code, clr_reg1...)
+
+	//sete reg1 lowest byte
+	code = append(code, sete_reg...)
+	code = append(code, singleRegisterEncoding(ins.Arguments[0]))
+
+	return code, data, patches
+}
+
+func EqRegImm(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
+	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
+
+	//Cmp reg1 to reg2
+	cmp_regs, _, _ := genAuxInstruction(CmpRegInt, ins.Arguments...)
+	code = append(code, cmp_regs...)
+
+	//Clear reg1
+	clr_reg1, _, _ := genAuxInstruction(MovRegImm, ins.Arguments[0], 0x0)
+	code = append(code, clr_reg1...)
+
+	//sete reg1 lowest byte
+	code = append(code, sete_reg...)
+	code = append(code, singleRegisterEncoding(ins.Arguments[0]))
 
 	return code, data, patches
 }
