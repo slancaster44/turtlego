@@ -238,77 +238,12 @@ func AndRegImm(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
 	return code, data, patches
 }
 
-var sete_reg []byte = []byte{0x0F, 0x94}
-
-func EqRegReg(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
-	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
-
-	//Cmp reg1 to reg2
-	cmp_regs, _, _ := genAuxInstruction(CmpRegReg, ins.Arguments...)
-	code = append(code, cmp_regs...)
-
-	//Clear reg1
-	clr_reg1, _, _ := genAuxInstruction(MovRegImm, ins.Arguments[0], 0x0)
-	code = append(code, clr_reg1...)
-
-	//sete reg1 lowest byte
-	code = append(code, sete_reg...)
-	code = append(code, singleRegisterEncoding(ins.Arguments[0]))
-
-	return code, data, patches
-}
-
-func EqRegImm(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
-	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
-
-	//Cmp reg1 to reg2
-	cmp_regs, _, _ := genAuxInstruction(CmpRegInt, ins.Arguments...)
-	code = append(code, cmp_regs...)
-
-	//Clear reg1
-	clr_reg1, _, _ := genAuxInstruction(MovRegImm, ins.Arguments[0], 0x0)
-	code = append(code, clr_reg1...)
-
-	//sete reg1 lowest byte
-	code = append(code, sete_reg...)
-	code = append(code, singleRegisterEncoding(ins.Arguments[0]))
-
-	return code, data, patches
-}
-
-var setne_reg []byte = []byte{0x0F, 0x95}
-
-func NeRegImm(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
-	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
-
-	cmp_regs, _, _ := genAuxInstruction(CmpRegInt, ins.Arguments...)
-	code = append(code, cmp_regs...)
-
-	clr_reg1, _, _ := genAuxInstruction(MovRegImm, ins.Arguments[0], 0x0)
-	code = append(code, clr_reg1...)
-
-	//setne reg1 lowest byte
-	code = append(code, setne_reg...)
-	code = append(code, singleRegisterEncoding(ins.Arguments[0]))
-
-	return code, data, patches
-}
-
-func NeRegReg(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
-	code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
-
-	cmp_regs, _, _ := genAuxInstruction(CmpRegReg, ins.Arguments...)
-	code = append(code, cmp_regs...)
-
-	clr_reg1, _, _ := genAuxInstruction(MovRegImm, ins.Arguments[0], 0x0)
-	code = append(code, clr_reg1...)
-
-	//setne reg1 lowest byte
-	code = append(code, setne_reg...)
-	code = append(code, singleRegisterEncoding(ins.Arguments[0]))
-
-	return code, data, patches
-}
+//==, !=, <, >, >=, <= all use similar algorithms to generate theri code
+//Compare the two values >> Clear register that result will be stored in >>
+//move the result from the rFlags register to the result register using SETcc
+//
+//Because the algorithm is so similar, this generator function was created
+//to limit duplicate code between these functions.
 
 func mkComparisonAssemblerFns(setOpCodes []byte) (assemblerFn, assemblerFn) {
 	var reg_regFn assemblerFn = func(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
@@ -345,6 +280,12 @@ func mkComparisonAssemblerFns(setOpCodes []byte) (assemblerFn, assemblerFn) {
 
 	return reg_regFn, reg_immFn
 }
+
+var sete_reg []byte = []byte{0x0F, 0x94} //==
+var EqRegReg, EqRegImm assemblerFn = mkComparisonAssemblerFns(sete_reg)
+
+var setne_reg []byte = []byte{0x0F, 0x95} //!=
+var NeRegReg, NeRegImm assemblerFn = mkComparisonAssemblerFns(setne_reg)
 
 var setlt_reg []byte = []byte{0x0F, 0x9C} //<
 var LtRegReg, LtRegImm assemblerFn = mkComparisonAssemblerFns(setlt_reg)

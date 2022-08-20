@@ -69,18 +69,22 @@ func NewAssembler(pc *pcode.Program) *Assembler {
 		pcode.BOOL_OR_REG_REG:     x86_64.OrRegReg,
 		pcode.BOOL_AND_REG_REG:    x86_64.AndRegReg,
 		pcode.BOOL_AND_REG_IMM:    x86_64.AndRegImm,
-		pcode.EQ_REG_REG:          x86_64.EqRegReg,
-		pcode.EQ_REG_IMM:          x86_64.EqRegImm,
-		pcode.NE_REG_IMM:          x86_64.NeRegImm,
-		pcode.NE_REG_REG:          x86_64.NeRegReg,
-		pcode.LT_REG_IMM:          AssemblerFn(x86_64.LtRegImm),
-		pcode.LT_REG_REG:          AssemblerFn(x86_64.LtRegReg),
-		pcode.LE_REG_IMM:          AssemblerFn(x86_64.LeRegImm),
-		pcode.LE_REG_REG:          AssemblerFn(x86_64.LeRegReg),
-		pcode.GE_REG_IMM:          AssemblerFn(x86_64.GeRegImm),
-		pcode.GE_REG_REG:          AssemblerFn(x86_64.GeRegReg),
-		pcode.GT_REG_IMM:          AssemblerFn(x86_64.GtRegImm),
-		pcode.GT_REG_REG:          AssemblerFn(x86_64.GtRegReg),
+
+		//These functions are all generated using a higher-order function
+		//The function that creates these functions returns a compatiable
+		//type with AssemblerFn, but it must be converted here to be in the map
+		pcode.EQ_REG_REG: AssemblerFn(x86_64.EqRegReg),
+		pcode.EQ_REG_IMM: AssemblerFn(x86_64.EqRegImm),
+		pcode.NE_REG_IMM: AssemblerFn(x86_64.NeRegImm),
+		pcode.NE_REG_REG: AssemblerFn(x86_64.NeRegReg),
+		pcode.LT_REG_IMM: AssemblerFn(x86_64.LtRegImm),
+		pcode.LT_REG_REG: AssemblerFn(x86_64.LtRegReg),
+		pcode.LE_REG_IMM: AssemblerFn(x86_64.LeRegImm),
+		pcode.LE_REG_REG: AssemblerFn(x86_64.LeRegReg),
+		pcode.GE_REG_IMM: AssemblerFn(x86_64.GeRegImm),
+		pcode.GE_REG_REG: AssemblerFn(x86_64.GeRegReg),
+		pcode.GT_REG_IMM: AssemblerFn(x86_64.GtRegImm),
+		pcode.GT_REG_REG: AssemblerFn(x86_64.GtRegReg),
 	}
 	a.exitFnsMap = map[byte]func() []byte{
 		X86_64: x86_64.ExitX86,
