@@ -5,6 +5,8 @@ import (
 	"turtlego/src/pcode"
 )
 
+//Various functions that translate arithmetic & boolean pcode instructions into x86
+
 var add_imm_reg []byte = []byte{0x48, 0x81}
 var add_imm_rax []byte = []byte{0x48, 0x05}
 
@@ -307,3 +309,51 @@ func NeRegReg(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
 
 	return code, data, patches
 }
+
+func mkComparisonAssemblerFns(setOpCodes []byte) (assemblerFn, assemblerFn) {
+	var reg_regFn assemblerFn = func(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
+		code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
+
+		cmp_regs, _, _ := genAuxInstruction(CmpRegReg, ins.Arguments...)
+		code = append(code, cmp_regs...)
+
+		clr_reg1, _, _ := genAuxInstruction(MovRegImm, ins.Arguments[0], 0x0)
+		code = append(code, clr_reg1...)
+
+		//setne reg1 lowest byte
+		code = append(code, setOpCodes...)
+		code = append(code, singleRegisterEncoding(ins.Arguments[0]))
+
+		return code, data, patches
+	}
+
+	var reg_immFn assemblerFn = func(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
+		code, data, patches := []byte{}, []byte{}, []backpatch.BackPatch{}
+
+		cmp_regs, _, _ := genAuxInstruction(CmpRegInt, ins.Arguments...)
+		code = append(code, cmp_regs...)
+
+		clr_reg1, _, _ := genAuxInstruction(MovRegImm, ins.Arguments[0], 0x0)
+		code = append(code, clr_reg1...)
+
+		//setne reg1 lowest byte
+		code = append(code, setOpCodes...)
+		code = append(code, singleRegisterEncoding(ins.Arguments[0]))
+
+		return code, data, patches
+	}
+
+	return reg_regFn, reg_immFn
+}
+
+var setlt_reg []byte = []byte{0x0F, 0x9C} //<
+var LtRegReg, LtRegImm assemblerFn = mkComparisonAssemblerFns(setlt_reg)
+
+var setle_reg []byte = []byte{0x0F, 0x9E} //<=
+var LeRegReg, LeRegImm assemblerFn = mkComparisonAssemblerFns(setle_reg)
+
+var setgt_reg []byte = []byte{0x0F, 0x9F} //>
+var GtRegReg, GtRegImm assemblerFn = mkComparisonAssemblerFns(setgt_reg)
+
+var setge_reg []byte = []byte{0x0F, 0x9D} //>=
+var GeRegReg, GeRegImm assemblerFn = mkComparisonAssemblerFns(setge_reg)

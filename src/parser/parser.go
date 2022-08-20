@@ -93,6 +93,8 @@ func New(lexer *lexer.Lexer) *Parser {
 		"/":  {ast.FLT, ast.INT},
 		"*":  {ast.FLT, ast.INT},
 		"**": {ast.FLT, ast.INT},
+		">":  {ast.FLT, ast.INT},
+		"<":  {ast.FLT, ast.INT},
 	}
 
 	//Maps operators and their input types with the coresponding output type
@@ -109,6 +111,10 @@ func New(lexer *lexer.Lexer) *Parser {
 		{"<=", ast.FLT}:  ast.BOOL,
 		{">=", ast.INT}:  ast.BOOL,
 		{">=", ast.FLT}:  ast.BOOL,
+		{"<", ast.INT}:   ast.BOOL,
+		{"<", ast.FLT}:   ast.BOOL,
+		{">", ast.INT}:   ast.BOOL,
+		{">", ast.FLT}:   ast.BOOL,
 		{"||", ast.BOOL}: ast.BOOL,
 		{"&&", ast.BOOL}: ast.BOOL,
 		{"+", ast.FLT}:   ast.FLT,

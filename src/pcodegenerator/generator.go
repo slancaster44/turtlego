@@ -59,6 +59,10 @@ func NewGenerator(st ast.Block, registerCountInTargetMachine int) *Generator {
 		{"&&", ast.BOOL}: ret_val.mkInfixOpGenFunc(pcode.BOOL_AND_REG_IMM, pcode.BOOL_AND_REG_REG),
 		{"==", ast.BOOL}: ret_val.mkInfixOpGenFunc(pcode.EQ_REG_IMM, pcode.EQ_REG_REG),
 		{"!=", ast.BOOL}: ret_val.mkInfixOpGenFunc(pcode.NE_REG_IMM, pcode.NE_REG_REG),
+		{"<", ast.BOOL}:  ret_val.mkInfixOpGenFunc(pcode.LT_REG_IMM, pcode.LT_REG_REG),
+		{"<=", ast.BOOL}: ret_val.mkInfixOpGenFunc(pcode.LE_REG_IMM, pcode.LE_REG_REG),
+		{">", ast.BOOL}:  ret_val.mkInfixOpGenFunc(pcode.GT_REG_IMM, pcode.GT_REG_REG),
+		{">=", ast.BOOL}: ret_val.mkInfixOpGenFunc(pcode.GE_REG_IMM, pcode.GE_REG_REG),
 	}
 
 	ret_val.builtinsGenMap = map[string]func(*ast.Builtin) Register{

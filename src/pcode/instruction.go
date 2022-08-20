@@ -50,6 +50,17 @@ const (
 
 	NE_REG_REG
 	NE_REG_IMM
+
+	LT_REG_REG
+	LT_REG_IMM
+
+	LE_REG_REG
+	LE_REG_IMM
+
+	GT_REG_REG
+	GT_REG_IMM
+	GE_REG_REG
+	GE_REG_IMM
 )
 
 const (
@@ -103,6 +114,16 @@ var InstructionMnemonicMap = map[byte]string{
 	EQ_REG_REG: "eq_reg_reg",
 	NE_REG_REG: "ne_reg_reg",
 	NE_REG_IMM: "ne_reg_imm",
+
+	LT_REG_IMM: "lt_reg_imm",
+	LT_REG_REG: "lt_reg_reg",
+
+	LE_REG_REG: "le_reg_reg",
+	LE_REG_IMM: "le_reg_imm",
+	GT_REG_IMM: "gt_reg_imm",
+	GT_REG_REG: "gt_reg_reg",
+	GE_REG_IMM: "ge_reg_imm",
+	GE_REG_REG: "ge_reg_reg",
 }
 
 func (i *Instruction) Stringify() string {
