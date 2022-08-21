@@ -106,6 +106,23 @@ func (l *Lexer) buildStr() string {
 	return str
 }
 
+func (l *Lexer) buildChar() string {
+	l.src.MoveUp()
+	chr := string(l.src.CurChar)
+
+	if l.src.CurChar == '\\' {
+		chr = string(l.processEscapeChars())
+	}
+	l.src.MoveUp()
+
+	if l.src.CurChar != '\'' {
+		message.Error(l.src.Filename, "Syntax", "Expected \"'\" before end of character", l.src.LineNo, l.src.ColumnNo)
+	}
+	l.src.MoveUp()
+
+	return chr
+}
+
 func (l *Lexer) processEscapeChars() string {
 	l.src.MoveUp() //Move over '\'
 

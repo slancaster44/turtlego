@@ -68,3 +68,12 @@ func (p *Parser) parseIdent() ast.Node {
 
 	return n
 }
+
+func (p *Parser) parseChar() ast.Node {
+	v := []rune(p.lxr.CurTok.Value)[0]
+
+	n := &ast.Character{int(v), p.lxr.CurTok}
+	p.lxr.MoveUp()
+
+	return n
+}

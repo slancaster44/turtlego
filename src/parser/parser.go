@@ -70,6 +70,7 @@ func New(lexer *lexer.Lexer) *Parser {
 		tokens.LCURL:   p.parseBlock,
 		tokens.BUILTIN: p.parseBuiltin,
 		tokens.IF:      p.parseIfEl,
+		tokens.CHR:     p.parseChar,
 	}
 
 	p.infixParseFns = map[byte]infixFn{
@@ -82,52 +83,67 @@ func New(lexer *lexer.Lexer) *Parser {
 
 	//Map of operators to their accepted input types
 	p.infixOperatorTypeMap = map[string][]byte{
-		"==": {ast.INT, ast.STR, ast.BOOL, ast.FLT}, //Ex: "==" will accept int, str, bool, and flt inputs
-		"!=": {ast.INT, ast.STR, ast.BOOL, ast.FLT},
-		"<=": {ast.FLT, ast.INT},
-		">=": {ast.FLT, ast.INT},
+		"==": {ast.INT, ast.STR, ast.BOOL, ast.FLT, ast.CHR}, //Ex: "==" will accept int, str, bool, and flt inputs
+		"!=": {ast.INT, ast.STR, ast.BOOL, ast.FLT, ast.CHR},
+		"<=": {ast.FLT, ast.INT, ast.CHR},
+		">=": {ast.FLT, ast.INT, ast.CHR},
 		"||": {ast.BOOL},
 		"&&": {ast.BOOL},
-		"+":  {ast.STR, ast.INT, ast.FLT},
-		"-":  {ast.FLT, ast.INT},
-		"/":  {ast.FLT, ast.INT},
-		"*":  {ast.FLT, ast.INT},
-		"**": {ast.FLT, ast.INT},
-		">":  {ast.FLT, ast.INT},
-		"<":  {ast.FLT, ast.INT},
+		"+":  {ast.STR, ast.INT, ast.FLT, ast.CHR},
+		"-":  {ast.FLT, ast.INT, ast.CHR},
+		"/":  {ast.FLT, ast.INT, ast.CHR},
+		"*":  {ast.FLT, ast.INT, ast.CHR},
+		">":  {ast.FLT, ast.INT, ast.CHR},
+		"<":  {ast.FLT, ast.INT, ast.CHR},
 	}
 
 	//Maps operators and their input types with the coresponding output type
 	p.infixOperatorOutputMap = map[operatorInputOutputKey]byte{
-		{"==", ast.INT}:  ast.BOOL, //Ex: when "==" as integer input, it has boolean output
+		{"==", ast.INT}:  ast.BOOL, //Ex: when "==" as integer input on both sides, it has boolean output; //2 == 2 >> true
 		{"==", ast.FLT}:  ast.BOOL,
 		{"==", ast.STR}:  ast.BOOL,
 		{"==", ast.BOOL}: ast.BOOL,
+		{"==", ast.CHR}:  ast.BOOL,
+
+		{"!=", ast.CHR}:  ast.BOOL,
 		{"!=", ast.INT}:  ast.BOOL,
 		{"!=", ast.FLT}:  ast.BOOL,
 		{"!=", ast.STR}:  ast.BOOL,
 		{"!=", ast.BOOL}: ast.BOOL,
-		{"<=", ast.INT}:  ast.BOOL,
-		{"<=", ast.FLT}:  ast.BOOL,
-		{">=", ast.INT}:  ast.BOOL,
-		{">=", ast.FLT}:  ast.BOOL,
-		{"<", ast.INT}:   ast.BOOL,
-		{"<", ast.FLT}:   ast.BOOL,
-		{">", ast.INT}:   ast.BOOL,
-		{">", ast.FLT}:   ast.BOOL,
+
+		{"<=", ast.INT}: ast.BOOL,
+		{"<=", ast.FLT}: ast.BOOL,
+		{"<=", ast.CHR}: ast.BOOL,
+
+		{">=", ast.INT}: ast.BOOL,
+		{">=", ast.FLT}: ast.BOOL,
+		{">=", ast.CHR}: ast.BOOL,
+
+		{"<", ast.CHR}: ast.BOOL,
+		{"<", ast.INT}: ast.BOOL,
+		{"<", ast.FLT}: ast.BOOL,
+
+		{">", ast.CHR}: ast.BOOL,
+		{">", ast.INT}: ast.BOOL,
+		{">", ast.FLT}: ast.BOOL,
+
 		{"||", ast.BOOL}: ast.BOOL,
 		{"&&", ast.BOOL}: ast.BOOL,
-		{"+", ast.FLT}:   ast.FLT,
-		{"+", ast.INT}:   ast.INT,
-		{"+", ast.STR}:   ast.STR,
-		{"-", ast.FLT}:   ast.FLT,
-		{"-", ast.INT}:   ast.INT,
-		{"/", ast.FLT}:   ast.FLT,
-		{"/", ast.INT}:   ast.INT,
-		{"*", ast.FLT}:   ast.FLT,
-		{"*", ast.INT}:   ast.INT,
-		{"**", ast.FLT}:  ast.FLT,
-		{"**", ast.INT}:  ast.INT,
+
+		{"+", ast.FLT}: ast.FLT,
+		{"+", ast.INT}: ast.INT,
+		{"+", ast.STR}: ast.STR,
+		{"+", ast.CHR}: ast.CHR,
+
+		{"-", ast.FLT}: ast.FLT,
+		{"-", ast.INT}: ast.INT,
+		{"-", ast.CHR}: ast.CHR,
+
+		{"/", ast.FLT}: ast.FLT,
+		{"/", ast.INT}: ast.INT,
+
+		{"*", ast.FLT}: ast.FLT,
+		{"*", ast.INT}: ast.INT,
 	}
 
 	p.prefixOperatorTypeMap = map[string][]byte{

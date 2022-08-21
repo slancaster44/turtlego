@@ -1,8 +1,4 @@
 ... Next Steps ...
-2) Implement type awareness for builtins
-3) Implement booleans, and boolean expressions
-3.5) Implement prefix operators (negative numbers?)
-4) Implement characters
 5) Implement Heap Variables
     5a) Lists
     5a) Functions
@@ -10,5 +6,4 @@
 6) Implement a robust type system
 
 == Stuff I hate ==
-The 0x06 bug in jumps
 If expressions with different let exprs

@@ -31,4 +31,5 @@ const (
 	INT_NT
 
 	BUILTIN_NT
+	CHR_NT
 )

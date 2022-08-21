@@ -6,10 +6,20 @@ import (
 )
 
 func (p *Generator) genIntCode(stmt ast.Node) Register {
-	number := stmt.(*ast.Int).Value
+
+	var value int
+	switch stmt.(type) {
+	case (*ast.Int):
+		value = stmt.(*ast.Int).Value
+	case (*ast.Character):
+		value = stmt.(*ast.Character).Value
+	default:
+		p.raiseError("Type", "Can only load integer or character. This is a bug", stmt.GetTok())
+	}
+
 	reg := p.GetRegister()
 
-	p.WriteInstruction(pcode.LOADINT, reg.RegisterNumber, number)
+	p.WriteInstruction(pcode.LOADINT, reg.RegisterNumber, value)
 
 	return reg
 }

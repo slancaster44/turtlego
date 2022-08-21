@@ -5,6 +5,7 @@ const (
 	FLT
 	STR
 	BOOL
+	CHR
 
 	NO_TYPE
 )

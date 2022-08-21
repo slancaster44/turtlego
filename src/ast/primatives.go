@@ -55,6 +55,31 @@ func (l *Flt) NodeType() byte {
 
 /////////////////////////////////////////////////
 
+type Character struct {
+	Value int
+	Tok   tokens.Token
+}
+
+func (c *Character) Stringify(tab string) string {
+	return fmt.Sprintf("%s<Character value='%c'>\n", tab, c.Value)
+}
+
+func (c *Character) PrintAll(tab string) {
+	fmt.Print(c.Stringify(tab))
+}
+
+func (c *Character) GetTok() tokens.Token {
+	return c.Tok
+}
+
+func (c *Character) TypeGenerated() byte {
+	return CHR
+}
+
+func (c *Character) NodeType() byte {
+	return CHR_NT
+}
+
 type String struct {
 	Value string
 	Tok   tokens.Token

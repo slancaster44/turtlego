@@ -74,9 +74,14 @@ func (l *Lexer) MoveUp() {
 		}
 		return
 
-	} else if isQuote(l.src.CurChar) {
+	} else if l.src.CurChar == '"' {
 		str := l.buildStr()
 		l.setTok(str, tokens.STR)
+		return
+
+	} else if l.src.CurChar == '\'' {
+		chr := l.buildChar()
+		l.setTok(chr, tokens.CHR)
 		return
 
 	} else {

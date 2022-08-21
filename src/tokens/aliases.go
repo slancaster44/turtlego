@@ -10,6 +10,7 @@ const (
 	FLT
 	INT
 	STR
+	CHR
 	BOOL
 
 	LCURL

@@ -19,6 +19,10 @@ func (g *Generator) genBuiltinCode(n ast.Node) Register {
 func (g *Generator) genPrintCode(n *ast.Builtin) Register {
 
 	for _, arg := range n.Args {
+		if arg.TypeGenerated() != ast.CHR && arg.TypeGenerated() != ast.STR {
+			g.raiseError("Type", "print() may only take characters or strings as inputs", arg.GetTok())
+		}
+
 		reg := g.appendCodeFor(arg)
 		g.WriteInstruction(pcode.BUILTIN_CALL, pcode.BUILTIN_PRINT, reg.RegisterNumber)
 		g.ReleaseRegister(reg)

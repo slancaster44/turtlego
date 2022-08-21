@@ -43,6 +43,7 @@ func NewGenerator(st ast.Block, registerCountInTargetMachine int) *Generator {
 		ast.BLOCK_NT:   ret_val.genBlockCode,
 		ast.BOOLEAN_NT: ret_val.genBoolCode,
 		ast.IFEL_NT:    ret_val.genIfElse,
+		ast.CHR_NT:     ret_val.genIntCode,
 	}
 
 	ret_val.numberOfActiveAllocations = make(map[int]int)

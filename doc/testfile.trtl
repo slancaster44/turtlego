@@ -1,4 +1,9 @@
-#Reaching into past scopes not working
+let result =
+    if 10 == 9
+        'a'
+    else
+        'b'
+        
+#print(result)
 
-#64
-print(128 / 2)
+print('H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '\n')
