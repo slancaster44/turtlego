@@ -1,8 +1,10 @@
 package parser
 
+import "turtlego/src/ast"
+
 type TableEntry struct {
 	LocationOnStack int
-	Type            byte
+	Type            ast.TypeInfo
 }
 
 type SymTab struct {

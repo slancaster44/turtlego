@@ -21,7 +21,7 @@ func (s *Int) GetTok() tokens.Token {
 	return s.Tok
 }
 
-func (i *Int) TypeGenerated() byte {
+func (i *Int) TypeGenerated() TypeInfo {
 	return INT
 }
 
@@ -45,7 +45,7 @@ func (s *Flt) GetTok() tokens.Token {
 	return s.Tok
 }
 
-func (l *Flt) TypeGenerated() byte {
+func (l *Flt) TypeGenerated() TypeInfo {
 	return FLT
 }
 
@@ -72,7 +72,7 @@ func (c *Character) GetTok() tokens.Token {
 	return c.Tok
 }
 
-func (c *Character) TypeGenerated() byte {
+func (c *Character) TypeGenerated() TypeInfo {
 	return CHR
 }
 
@@ -96,7 +96,7 @@ func (s *String) GetTok() tokens.Token {
 	return s.Tok
 }
 
-func (s *String) TypeGenerated() byte {
+func (s *String) TypeGenerated() TypeInfo {
 	return STR
 }
 
@@ -122,7 +122,7 @@ func (b *Boolean) GetTok() tokens.Token {
 	return b.Tok
 }
 
-func (b *Boolean) TypeGenerated() byte {
+func (b *Boolean) TypeGenerated() TypeInfo {
 	return BOOL
 }
 
@@ -136,7 +136,7 @@ type Identifier struct {
 	Value           string
 	Tok             tokens.Token
 	ScopeDepthFound int
-	Type            byte
+	Type            TypeInfo
 }
 
 func (i *Identifier) PrintAll(tab string) {
@@ -150,7 +150,7 @@ func (i *Identifier) Stringify(tab string) string {
 func (i *Identifier) GetTok() tokens.Token {
 	return i.Tok
 }
-func (i *Identifier) TypeGenerated() byte {
+func (i *Identifier) TypeGenerated() TypeInfo {
 	return i.Type
 }
 

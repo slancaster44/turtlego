@@ -24,7 +24,7 @@ func (i *IfElse) NodeType() byte {
 	return IFEL_NT
 }
 
-func (i *IfElse) TypeGenerated() byte {
+func (i *IfElse) TypeGenerated() TypeInfo {
 	return i.TrueExpr.TypeGenerated()
 }
 

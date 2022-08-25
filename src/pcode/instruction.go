@@ -61,6 +61,10 @@ const (
 	GT_REG_IMM
 	GE_REG_REG
 	GE_REG_IMM
+
+	MK_HEAP
+	ALLOC
+	DEALLOC
 )
 
 const (
@@ -124,6 +128,10 @@ var InstructionMnemonicMap = map[byte]string{
 	GT_REG_REG: "gt_reg_reg",
 	GE_REG_IMM: "ge_reg_imm",
 	GE_REG_REG: "ge_reg_reg",
+
+	MK_HEAP: "mk_heap",
+	ALLOC:   "alloc", //alloc <reg> <size-in-qwords>
+	DEALLOC: "dealloc",
 }
 
 func (i *Instruction) Stringify() string {

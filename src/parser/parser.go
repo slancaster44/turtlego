@@ -33,7 +33,7 @@ type (
 
 type operatorInputOutputKey struct {
 	op        string
-	inputType byte
+	inputType ast.TypeInfo
 }
 type Parser struct {
 	lxr  *lexer.Lexer
@@ -42,11 +42,11 @@ type Parser struct {
 	prefixParseFns map[byte]prefixFn
 	infixParseFns  map[byte]infixFn
 
-	infixOperatorTypeMap   map[string][]byte
-	infixOperatorOutputMap map[operatorInputOutputKey]byte
+	infixOperatorTypeMap   map[string][]ast.TypeInfo
+	infixOperatorOutputMap map[operatorInputOutputKey]ast.TypeInfo
 
-	prefixOperatorTypeMap   map[string][]byte
-	prefixOperatorOutputMap map[operatorInputOutputKey]byte
+	prefixOperatorTypeMap   map[string][]ast.TypeInfo
+	prefixOperatorOutputMap map[operatorInputOutputKey]ast.TypeInfo
 
 	symtabs []SymTab
 }
@@ -68,6 +68,7 @@ func New(lexer *lexer.Lexer) *Parser {
 		tokens.LPAREN:  p.parseLParen,
 		tokens.LET:     p.parseLet,
 		tokens.LCURL:   p.parseBlock,
+		tokens.LBRACK:  p.parseList,
 		tokens.BUILTIN: p.parseBuiltin,
 		tokens.IF:      p.parseIfEl,
 		tokens.CHR:     p.parseChar,
@@ -82,7 +83,7 @@ func New(lexer *lexer.Lexer) *Parser {
 	}
 
 	//Map of operators to their accepted input types
-	p.infixOperatorTypeMap = map[string][]byte{
+	p.infixOperatorTypeMap = map[string][]ast.TypeInfo{
 		"==": {ast.INT, ast.STR, ast.BOOL, ast.FLT, ast.CHR}, //Ex: "==" will accept int, str, bool, and flt inputs
 		"!=": {ast.INT, ast.STR, ast.BOOL, ast.FLT, ast.CHR},
 		"<=": {ast.FLT, ast.INT, ast.CHR},
@@ -98,7 +99,7 @@ func New(lexer *lexer.Lexer) *Parser {
 	}
 
 	//Maps operators and their input types with the coresponding output type
-	p.infixOperatorOutputMap = map[operatorInputOutputKey]byte{
+	p.infixOperatorOutputMap = map[operatorInputOutputKey]ast.TypeInfo{
 		{"==", ast.INT}:  ast.BOOL, //Ex: when "==" as integer input on both sides, it has boolean output; //2 == 2 >> true
 		{"==", ast.FLT}:  ast.BOOL,
 		{"==", ast.STR}:  ast.BOOL,
@@ -146,13 +147,13 @@ func New(lexer *lexer.Lexer) *Parser {
 		{"*", ast.INT}: ast.INT,
 	}
 
-	p.prefixOperatorTypeMap = map[string][]byte{
+	p.prefixOperatorTypeMap = map[string][]ast.TypeInfo{
 		"-": {ast.FLT, ast.INT},
 		"+": {ast.FLT, ast.INT},
 		"!": {ast.BOOL},
 	}
 
-	p.prefixOperatorOutputMap = map[operatorInputOutputKey]byte{
+	p.prefixOperatorOutputMap = map[operatorInputOutputKey]ast.TypeInfo{
 		{"-", ast.FLT}:  ast.FLT,
 		{"-", ast.INT}:  ast.INT,
 		{"+", ast.FLT}:  ast.FLT,
@@ -165,11 +166,12 @@ func New(lexer *lexer.Lexer) *Parser {
 	return p
 }
 
-func (p *Parser) addSymtabEntry(ident string, Type byte, location int) {
-
+func (p *Parser) addSymtabEntry(ident string, Type ast.TypeInfo, location int) {
 	p.symtabs[0].Entries[ident] = TableEntry{location, Type}
 }
 
+// Returns variable information as well as the scope depth of the variable
+// TODO: consolodate
 func (p *Parser) searchSymtab(ident string) (TableEntry, int) {
 	for i, table := range p.symtabs {
 		varInfo, ok := table.Entries[ident]

@@ -9,14 +9,14 @@ type Builtin struct {
 	Args    []Node
 	Name    string
 	Tok     tokens.Token
-	RetType byte
+	RetType TypeInfo
 }
 
 func (b *Builtin) GetTok() tokens.Token {
 	return b.Tok
 }
 
-func (b *Builtin) TypeGenerated() byte {
+func (b *Builtin) TypeGenerated() TypeInfo {
 	return b.RetType
 }
 

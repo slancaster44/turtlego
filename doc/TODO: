@@ -1,9 +1,38 @@
 ... Next Steps ...
+4) Functions
+    Setup Code: jmp statement, code for function,
+    Call code: return value will be left in a register
+        -- Push Stack Frame with space for arguments
+        -- Declare arguments
+        -- Jump to code, execute leaving last expression's
+        result in register
+        -- Return to original code, pop stack frame, do whatever
+        with value in register
+
 5) Implement Heap Variables
     5a) Lists
-    5a) Functions
 
 6) Implement a robust type system
+    type person = {
+        str name
+        int age
+    }
+
+    OR
+
+    type person = {str, int}
+    let newPerson = func(str name, int age) person {
+        return {name, age}
+    }
+
+    let personGetName = func(person p) str {
+        return p.0
+    }
+
+    let admin = person("John", 32)
+    personGetName(admin)
+
+
 
 == Stuff I hate ==
 If expressions with different let exprs

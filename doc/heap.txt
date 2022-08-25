@@ -1,0 +1,110 @@
+
+TODO for implementing the Heap
+    Figure out where the stack is
+        --Stack Overflow?
+    Figure Out:
+        -- How to set aside space for the heap,
+        -- How to extend the heap
+        -- How to mark a location as belonging to a specific variable
+        -- How to move something to a different location in the heap
+        -- How to remove something from the heap
+        -- How to keep track of empty space in the heap
+
+Mmap:
+    Map_anon flag
+    fd = -1
+    offset = 0
+    prot = r | w | e 
+    length = (floor(size of object to allocate / page size) + 1) * page size
+    addr = ?
+
+Step 1)
+    let a = {}
+
+    //Learn to allocate a freaking pages
+
+    Plan:
+        1) Learn to call internal function in x86
+        attached to a call function
+
+Brainstorming:
+    let a = {'H', 'e', 'l', 'l', 'o'}
+
+    print(a)
+
+    We need to know the address a starts at
+    on the heap, as well as how long a is (in bytes or 8-byte chunks?)
+
+    let a = append(a, '\n')
+
+    We need to find a space in the heap that is the size of 'a' + 1
+    Then we need to copy 'a' into it, as well as the '\n'
+    Then we need to mark the space 'a' was in as available for 
+    use
+
+    Possible Design:
+        The heap will come in 8-byte chunks. A pointer to the
+        heap will be kept at the bottom of the stack
+
+        How a Variable is stored.
+            The first 8-byte chunk will store a number indicating 
+            the number of 8-byte chunks the variable will consume
+
+            Ergo, the size of a list will be 1 + the number
+            of elements
+
+
+        How they will be accessed on the stack
+            The stack value for a heap variable will be a pointer
+            to the beginning of the heap variable
+
+        Necessary Functions
+            allocate(<size in bytes>) --> Returns starting address
+                of an available chunk
+            deallocate(<starting address>) --> Loads size of variable
+                at that address, and deallocates all space associated with
+                that value
+            move_qword(<address>) --> sets the value of that qword
+            get_qword(<address>) --> gets value of qword at that address
+            extend_heap(<size-in-qwords>) --> extends the heap by that amount
+            move_heap(<new-starting-address>) --> moves the heap to that new location
+
+        Questions About this Design
+            When the heap must be expanded, how do we move
+            the heap metadata around
+
+            What happens to the heap if the stack runs into it?
+
+        Garbage Collection
+            Every time a stack frame is popped, we will
+            sweep the heap and delete all variables that
+            where in that scope
+
+            During parsing, a block/function will
+            generate a list of all variables in it
+            that are stored on the heap, that way
+            we can delete all the heap values 
+            when the scope is popped
+            
+            Will we then also defragment the heap?
+
+            What happens when a function or block returns 
+            a heap variable?
+                We could set aside space on the stack for the return
+                variable before calling the function
+                Then when the scope is popped, defragment the heap
+                while holding on to the returned heap variable
+                Then copy the pointer to the space on the stack we
+                set aside earlier
+
+    Design 2.0
+        Necessary Instructions
+            mov_reg_addr <register> <addr>
+            mov_addr_reg <addr> <register>
+
+        Pcode Register Values
+            hbp -- Pointer to the beginning of the heap
+            hep -- Pointer to end of the heap
+
+
+        When an object is added to heap

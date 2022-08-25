@@ -19,8 +19,11 @@ func (p *Parser) parseBlock() ast.Node {
 		p.skipWhitespace()
 	}
 	p.lxr.MoveUp()
-
+	if len(Exprs) == 0 {
+		p.raiseError("Expression", "Cannot have a block expression that returns no value")
+	}
 	scopeDepth := len(p.symtabs)
+
 	typeGenerated := Exprs[len(Exprs)-1].TypeGenerated()
 	numOfStackVars := len(p.symtabs[0].Entries)
 	p.symtabs = p.symtabs[1:]

@@ -11,7 +11,7 @@ type Node interface {
 	PrintAll(string)
 	Stringify(string) string
 	GetTok() tokens.Token
-	TypeGenerated() byte
+	TypeGenerated() TypeInfo
 	NodeType() byte
 }
 
@@ -32,4 +32,6 @@ const (
 
 	BUILTIN_NT
 	CHR_NT
+
+	LIST_NT
 )

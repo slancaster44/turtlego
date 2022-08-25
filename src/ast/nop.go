@@ -9,7 +9,7 @@ type Nop struct {
 	Tok tokens.Token
 }
 
-func (n *Nop) TypeGenerated() byte {
+func (n *Nop) TypeGenerated() TypeInfo {
 	return NO_TYPE
 }
 

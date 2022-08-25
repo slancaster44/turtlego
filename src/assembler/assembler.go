@@ -85,6 +85,9 @@ func NewAssembler(pc *pcode.Program) *Assembler {
 		pcode.GE_REG_REG: AssemblerFn(x86_64.GeRegReg),
 		pcode.GT_REG_IMM: AssemblerFn(x86_64.GtRegImm),
 		pcode.GT_REG_REG: AssemblerFn(x86_64.GtRegReg),
+
+		pcode.MK_HEAP: x86_64.MkHeap,
+		pcode.ALLOC:   x86_64.Alloc,
 	}
 	a.exitFnsMap = map[byte]func() []byte{
 		X86_64: x86_64.ExitX86,

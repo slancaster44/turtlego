@@ -1,9 +1,3 @@
-let result =
-    if 10 == 9
-        'a'
-    else
-        'b'
-        
-#print(result)
+#let a = ['H', 'e', 'l', 'l', 'o']
 
-print('H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '\n')
+10

@@ -12,13 +12,13 @@ type Location struct {
 	ScopeDepth      int
 }
 
-//Let when the variable is intialized
+// Let when the variable is intialized
 type LetInit struct {
 	Tok          tokens.Token
 	Ident        string
 	LocationInfo Location
 	Expr         Node
-	Type         byte
+	Type         TypeInfo
 }
 
 func (l *LetInit) GetTok() tokens.Token {
@@ -37,7 +37,7 @@ func (l *LetInit) PrintAll(tab string) {
 	fmt.Print(l.Stringify(tab))
 }
 
-func (l *LetInit) TypeGenerated() byte {
+func (l *LetInit) TypeGenerated() TypeInfo {
 	return l.Type
 }
 
@@ -45,8 +45,8 @@ func (l *LetInit) NodeType() byte {
 	return LETINIT_NT
 }
 
-//Let when the variable value is not intialized
-//Syntax: let <ident> : <type>
+// Let when the variable value is not intialized
+// Syntax: let <ident> : <type>
 type LetType struct {
 	Tok     tokens.Token
 	Ident   string

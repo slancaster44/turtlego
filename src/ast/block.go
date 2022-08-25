@@ -7,7 +7,7 @@ import (
 
 type Block struct {
 	Exprs        []Node
-	RetType      byte
+	RetType      TypeInfo
 	NumStackVars int
 	ScopeDepth   int
 	Tok          tokens.Token
@@ -17,7 +17,7 @@ func (b *Block) GetTok() tokens.Token {
 	return b.Tok
 }
 
-func (b *Block) TypeGenerated() byte {
+func (b *Block) TypeGenerated() TypeInfo {
 	return b.RetType
 }
 

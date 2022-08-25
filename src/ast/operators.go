@@ -9,7 +9,7 @@ type PrefixExpr struct {
 	Expr Node
 	Op   string
 	Tok  tokens.Token
-	Type byte
+	Type TypeInfo
 }
 
 func (p *PrefixExpr) PrintAll(tab string) {
@@ -27,7 +27,7 @@ func (p *PrefixExpr) GetTok() tokens.Token {
 	return p.Tok
 }
 
-func (p *PrefixExpr) TypeGenerated() byte {
+func (p *PrefixExpr) TypeGenerated() TypeInfo {
 	return p.Type
 }
 
@@ -42,7 +42,7 @@ type InfixExpr struct {
 	Right Node
 	Op    string
 	Tok   tokens.Token
-	Type  byte
+	Type  TypeInfo
 }
 
 func (i *InfixExpr) PrintAll(tab string) {
@@ -66,7 +66,7 @@ func (i *InfixExpr) Stringify(tab string) string {
 func (i *InfixExpr) GetTok() tokens.Token {
 	return i.Tok
 }
-func (i *InfixExpr) TypeGenerated() byte {
+func (i *InfixExpr) TypeGenerated() TypeInfo {
 	return i.Type
 }
 

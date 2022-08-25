@@ -8,7 +8,7 @@ import (
 //TODO: Proper print return value
 //once strings are implemented
 
-var BuiltinRetMap map[string]byte = map[string]byte{
+var BuiltinRetMap map[string]ast.TypeInfo = map[string]ast.TypeInfo{
 	"print": ast.INT,
 }
 

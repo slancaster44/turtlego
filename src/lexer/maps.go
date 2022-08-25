@@ -25,6 +25,8 @@ var singleChar = map[string]byte{
 	"<":       tokens.OP4,
 	">":       tokens.OP4,
 	",":       tokens.COMMA,
+	"[":       tokens.LBRACK,
+	"]":       tokens.RBRACK,
 }
 
 var doubleChar = map[string]byte{

@@ -4,7 +4,7 @@ import (
 	"turtlego/src/ast"
 )
 
-//Syntax: <operator><expression>
+// Syntax: <operator><expression>
 func (p *Parser) parsePrefix() ast.Node {
 	tok := p.lxr.CurTok
 	op := p.lxr.CurTok.Value
@@ -23,8 +23,8 @@ func (p *Parser) parsePrefix() ast.Node {
 	return &ast.PrefixExpr{expr, op, tok, generatedType}
 }
 
-/////////////////////////////////////////////////
-//Syntax: <expr> <operator> <expr>
+// ///////////////////////////////////////////////
+// Syntax: <expr> <operator> <expr>
 func (p *Parser) parseInfix(left ast.Node) ast.Node {
 	op := p.lxr.CurTok.Value
 	tok := p.lxr.CurTok
@@ -42,11 +42,10 @@ func (p *Parser) parseInfix(left ast.Node) ast.Node {
 	return &ast.InfixExpr{left, right, op, tok, outputType}
 }
 
-/////////////////////////////////////////////////
-
-func (p *Parser) checkOpInputType(inputType byte, acceptedTypes []byte) {
+// ///////////////////////////////////////////////
+func (p *Parser) checkOpInputType(inputType ast.TypeInfo, acceptedTypes []ast.TypeInfo) {
 	for _, t := range acceptedTypes {
-		if t == inputType {
+		if inputType.DoesThisMatch(t) {
 			return
 		}
 	}

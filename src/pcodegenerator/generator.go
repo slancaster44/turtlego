@@ -13,7 +13,7 @@ const UNKOWN_ADDRESS int = 0
 
 type OpTypePair struct {
 	Op  string
-	Typ byte
+	Typ ast.TypeInfo
 }
 
 type Generator struct {
@@ -44,6 +44,7 @@ func NewGenerator(st ast.Block, registerCountInTargetMachine int) *Generator {
 		ast.BOOLEAN_NT: ret_val.genBoolCode,
 		ast.IFEL_NT:    ret_val.genIfElse,
 		ast.CHR_NT:     ret_val.genIntCode,
+		ast.LIST_NT:    ret_val.genListInit,
 	}
 
 	ret_val.numberOfActiveAllocations = make(map[int]int)
@@ -80,6 +81,7 @@ func (g *Generator) raiseError(n, m string, tok tokens.Token) {
 }
 
 func (g *Generator) GenPCode() {
+	g.WriteInstruction(pcode.MK_HEAP)
 	g.pushStackFrame(g.SyntaxTree.NumStackVars, g.SyntaxTree.ScopeDepth)
 	for _, stmt := range g.SyntaxTree.Exprs {
 		reg := g.appendCodeFor(stmt)

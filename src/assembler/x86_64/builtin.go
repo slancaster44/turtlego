@@ -22,7 +22,7 @@ func Builtin(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
 	return fn(ins)
 }
 
-var syscall = []byte{0x0F, 0x05}
+var syscall_code = []byte{0x0F, 0x05}
 
 func printBuiltin(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch) {
 	code, data := []byte{}, []byte{}
@@ -37,7 +37,7 @@ func printBuiltin(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch)
 
 	//Set System Call
 	//mov rsi, rsp
-	i, _, _ = genAuxInstruction(MovRegReg, pcode.REG4+1, pcode.STACK_POINTER)
+	i = codeToCopyRegDirectly(RSI, SP)
 	code = append(code, i...)
 
 	//mov rax, 4
@@ -53,7 +53,7 @@ func printBuiltin(ins pcode.Instruction) ([]byte, []byte, []backpatch.BackPatch)
 	code = append(code, i...)
 
 	//make syscall
-	code = append(code, syscall...)
+	code = append(code, syscall_code...)
 
 	//Pop value printed from stack
 	i, _, _ = genAuxInstruction(PopReg, reg_to_printed)

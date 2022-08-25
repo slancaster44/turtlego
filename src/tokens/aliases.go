@@ -17,6 +17,8 @@ const (
 	RCURL
 	LPAREN
 	RPAREN
+	LBRACK
+	RBRACK
 
 	IF
 	ELSE
