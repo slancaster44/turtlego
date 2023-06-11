@@ -1,0 +1,33 @@
+
+    ddw <name> <inital_value/nil> #stored in data or bss
+    dw  <name> <inital_value/nil>
+    dhw <name> <inital_value/nil>
+    db  <name> <inital_value/nil>
+
+    cdw
+    cw
+    chw
+    cb
+
+    # <comment>
+    (# <comment> #)
+
+Routine_Label:
+.dot_label:
+    //<r_opcode> <rd>, <rs1>, <rs2>
+    //<i_opcode> <rd>, <rs1> + <imm/constant_label>
+    //<i_opcode> <rd>, <rs1> - <imm/constant_label> ?
+    //<i_opcode> <rd>, <rs1>, <imm>
+    <s_opcode> <rs1> + <imm/constant_label>, <rs2>
+    <s_opcode> <rs1> - <imm/constant_label>, <rs2> ?
+    //<b_opcode> <rs1>, <rs2>, <routine_label/pcrel_13>
+    //<j_type> <rd>, <routine_label/constant_label>
+    <u_type> <rd>, <imm>
+
+Psuedo_Ops:
+    ld <reg>, <label>
+    la <reg>, <label>
+    st <label>, <reg>
+    call <label>
+    tail <label>
+    ret
