@@ -1,0 +1,77 @@
+Comments:
+    # <line_comment>
+    (# <multiline_comment> #)
+
+Primatives:
+    Integer
+    Unsigned
+    Float
+    Character (UTF)
+    Boolean
+
+Operators:
+
+If Else:
+    if <condtion>:
+
+    elif <condition>:
+
+    else:
+
+    end
+
+    Example:
+        const int a = 10
+        var int b = 11
+
+        if a > b:
+            puts("Wrong")
+        elif b > a:
+            puts("Correct")
+        else:
+            puts("Wrong")
+        end
+
+Loops
+
+    for <name> from <value> to <value>:
+
+    end
+
+    while <condition>:
+
+    end
+
+Functions:
+    sub <name>(<mutablility (optional)> <type> <arg>, .... ) -> <type>:
+
+    end
+
+    Example:
+        sub add(const int a, const int b) -> int:
+            return a + b
+        end
+
+        sub addItem(var LinkedList* lst, const int value):
+            init(lst.last.next)
+
+            lst.last.next.value = value
+            lst.last.next.next = null
+
+            lst.last = lst.last.next
+        end
+
+        sub inc(var int a) -> int:
+            return a + 1
+        end
+
+Arrays & Strings
+
+Structs:
+
+References:
+    Creation:
+        &heap_value
+
+    Type:
+        <type_referenced>*

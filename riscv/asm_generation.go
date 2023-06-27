@@ -61,15 +61,14 @@ func (a *Assembler) SBType(n ast.Node) {
 
 	if sb_node.Imm.Type() == ast.DOT_LABEL_NT {
 		dot_label := sb_node.Imm.(*ast.DotLabel)
-		ref := Reference{}
-		ref.Label = a.curTopLevelLabel + "." + dot_label.Name
-		ref.CodeOffset = uint64(len(a.curCu.Code)) //TODO: Be better
-		ref.PC = a.curPC
-		ref.ImmIndex = 0
-		ref.ProduceReference = func(ins_addr uint64, label_addr uint64) uint32 {
-			return uint32(label_addr - ins_addr)
-		}
+		label := a.curTopLevelLabel + "." + dot_label.Name
+		a.curCu.References = append(a.curCu.References, a.makePCRelReference(label, 0))
+	} else if sb_node.Imm.Type() == ast.LABEL_NT {
+		label := sb_node.Imm.(*ast.Label)
+		ref := a.makePCRelReference(label.Name, 0)
 		a.curCu.References = append(a.curCu.References, ref)
+	} else if sb_node.Imm.Type() == ast.INTEGER_NT {
+		ins.Imms[0] = uint32(sb_node.Imm.(*ast.Integer).Value)
 	}
 
 	switch sb_node.Mnemonic {

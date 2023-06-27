@@ -55,6 +55,19 @@ type Assembler struct {
 	genMap           map[int]func(n ast.Node)
 }
 
+func (a *Assembler) makePCRelReference(labelName string, immIndex int) Reference {
+	ref := Reference{}
+	ref.Label = labelName
+	ref.CodeOffset = uint64(len(a.curCu.Code))
+	ref.PC = a.curPC
+	ref.ImmIndex = immIndex
+	ref.ProduceReference = func(ins_addr uint64, label_addr uint64) uint32 {
+		return uint32(label_addr - ins_addr)
+	}
+
+	return ref
+}
+
 func NewAssembler() *Assembler {
 	retVal := &Assembler{}
 	retVal.curPC = 0
